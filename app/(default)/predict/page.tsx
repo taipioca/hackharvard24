@@ -14,50 +14,167 @@ import axios from "axios";
 
 // City positions
 const cityPositions: { [key: string]: [number, number, number] } = {
-  "New York City, NY": [2.5, 1.2, 0],
-  "Los Angeles, CA": [-2.5, 0.2, 0],
-  "Chicago, IL": [0.5, 1, 0],
-  "Houston, TX": [0, -0.8, 0],
-  "Phoenix, AZ": [-1.5, 0, 0],
-  "Philadelphia, PA": [2.3, 0.8, 0],
-  "San Antonio, TX": [-0.5, -1, 0],
-  "San Diego, CA": [-2.3, -0.2, 0],
-  "Dallas, TX": [-0.2, -0.5, 0],
-  "San Jose, CA": [-2.4, 0.5, 0],
-  "Miami, FL": [2, -1.5, 0],
+  "Akron, OH": [1.2, 0.6, 0],
+  "Albany, NY": [2.6, 1.4, 0],
+  "Albuquerque, NM": [-1.6, -0.3, 0],
+  "Allentown, PA": [2.4, 1.0, 0],
+  "Asheville, NC": [1.6, -0.7, 0],
   "Atlanta, GA": [1.5, -0.8, 0],
-  "Seattle, WA": [-2.3, 1.8, 0],
-  "Denver, CO": [-1, 0.5, 0],
-  "Boston, MA": [2.7, 1.5, 0],
-  "Las Vegas, NV": [-2, 0.3, 0],
-  "Washington D.C., DC": [2.4, 0.9, 0],
+  "Augusta, GA": [1.7, -0.9, 0],
+  "Austin, TX": [-0.2, -0.8, 0],
+  "Bakersfield, CA": [-2.4, 0.3, 0],
   "Baltimore, MD": [2.5, 0.7, 0],
-  "Portland, OR": [-2.5, 1.6, 0],
-  "Oklahoma City, OK": [0.5, -0.5, 0],
-  "Milwaukee, WI": [0.6, 1.1, 0],
-  "Albuquerque, NM": [-1.7, -0.2, 0],
-  "Tucson, AZ": [-1.6, 0.2, 0],
-  "Fresno, CA": [-2.4, 0.1, 0],
-  "Sacramento, CA": [-2.5, 0.5, 0],
-  "Long Beach, CA": [-2.4, 0.3, 0],
-  "Kansas City, MO": [0.3, 0.1, 0],
-  "Mesa, AZ": [-1.5, 0.1, 0],
-  "Virginia Beach, VA": [2.3, -1.1, 0],
-  "Cleveland, OH": [1, 0.8, 0],
-  "Pittsburgh, PA": [1, 0.5, 0],
-  "New Orleans, LA": [0.5, -1.5, 0],
-  "Louisville, KY": [1, 0, 0],
-  "Tampa, FL": [2, -1.2, 0],
-  "Omaha, NE": [0.8, 0.4, 0],
-  "Cincinnati, OH": [1, 0.3, 0],
-  "Minneapolis, MN": [0, 1.4, 0],
-  "Wichita, KS": [0.7, -0.3, 0],
-  "Newark, NJ": [2.6, 1.3, 0],
-  "St. Louis, MO": [0.5, 0, 0],
-  "Anchorage, AK": [-2.8, 2, 0],
-  "Honolulu, HI": [-3, -2, 0],
+  "Barnstable Town, MA": [2.7, 1.6, 0],
   "Baton Rouge, LA": [0.5, -1.4, 0],
+  "Bend, OR": [-2.4, 1.4, 0],
+  "Birmingham, AL": [1.2, -1.0, 0],
+  "Boise City, ID": [-2.1, 1.3, 0],
+  "Boston, MA": [2.7, 1.5, 0],
+  "Boulder, CO": [-1.0, 0.7, 0],
+  "Bremerton, WA": [-2.3, 1.8, 0],
+  "Bridgeport, CT": [2.6, 1.4, 0],
+  "Buffalo, NY": [2.1, 1.1, 0],
+  "Canton, OH": [1.3, 0.6, 0],
+  "Cape Coral, FL": [2.2, -1.5, 0],
+  "Cedar Rapids, IA": [0.4, 0.7, 0],
+  "Charleston, SC": [1.7, -1.2, 0],
+  "Charlotte, NC": [1.7, -0.9, 0],
+  "Chattanooga, TN": [1.4, -0.8, 0],
+  "Chicago, IL": [0.5, 1, 0],
+  "Cincinnati, OH": [1.2, 0.4, 0],
+  "Clarksville, TN": [1.1, -0.5, 0],
+  "Cleveland, OH": [1.2, 0.7, 0],
+  "Colorado Springs, CO": [-1.1, 0.6, 0],
+  "Columbia, MO": [0.4, 0.2, 0],
+  "Columbia, SC": [1.7, -1.1, 0],
+  "Columbus, OH": [1.3, 0.4, 0],
+  "Concord, NH": [2.6, 1.6, 0],
+  "Corpus Christi, TX": [-0.3, -1.2, 0],
+  "Crestview, FL": [2.0, -1.3, 0],
+  "Dallas, TX": [-0.2, -0.5, 0],
+  "Daphne, AL": [1.2, -1.3, 0],
+  "Davenport, IA": [0.4, 0.6, 0],
+  "Dayton, OH": [1.2, 0.5, 0],
+  "Deltona, FL": [2.1, -1.4, 0],
+  "Denver, CO": [-1.0, 0.5, 0],
+  "Des Moines, IA": [0.4, 0.8, 0],
+  "Detroit, MI": [1.2, 0.9, 0],
+  "Duluth, MN": [0, 1.4, 0],
+  "Durham, NC": [1.8, -0.8, 0],
+  "El Paso, TX": [-1.4, -0.7, 0],
+  "Eugene, OR": [-2.4, 1.5, 0],
+  "Fayetteville, AR": [0.5, -0.7, 0],
+  "Fayetteville, NC": [1.8, -1.1, 0],
+  "Flint, MI": [1.2, 1.0, 0],
+  "Fort Collins, CO": [-1.0, 0.6, 0],
+  "Fresno, CA": [-2.4, 0.1, 0],
+  "Grand Rapids, MI": [1.1, 1.1, 0],
+  "Greeley, CO": [-1.0, 0.7, 0],
+  "Greensboro, NC": [1.8, -0.7, 0],
+  "Greenville, SC": [1.6, -0.9, 0],
+  "Harrisburg, PA": [2.4, 1.0, 0],
+  "Hartford, CT": [2.6, 1.3, 0],
+  "Hickory, NC": [1.7, -0.8, 0],
+  "Hilton Head Island, SC": [1.7, -1.3, 0],
+  "Houston, TX": [0, -0.8, 0],
+  "Huntsville, AL": [1.3, -1.0, 0],
+  "Indianapolis, IN": [0.8, 0.7, 0],
+  "Jacksonville, FL": [2.0, -1.2, 0],
+  "Jacksonville, NC": [1.9, -1.0, 0],
+  "Kansas City, MO": [0.3, 0.1, 0],
+  "Killeen, TX": [-0.3, -0.9, 0],
+  "Knoxville, TN": [1.4, -0.6, 0],
+  "Lake Havasu City, AZ": [-1.7, -0.1, 0],
+  "Lakeland, FL": [2.1, -1.3, 0],
+  "Lancaster, PA": [2.4, 1.1, 0],
+  "Lansing, MI": [1.1, 1.0, 0],
+  "Las Vegas, NV": [-2.0, 0.3, 0],
+  "Lexington, KY": [1.2, 0.1, 0],
+  "Lincoln, NE": [0.6, 0.5, 0],
+  "Little Rock, AR": [0.3, -0.6, 0],
+  "Los Angeles, CA": [-2.5, 0.2, 0],
+  "Louisville, KY": [1.1, 0, 0],
+  "Lubbock, TX": [-0.5, -0.8, 0],
+  "Madison, WI": [0.6, 1.2, 0],
+  "Memphis, TN": [0.5, -0.7, 0],
+  "Miami, FL": [2, -1.5, 0],
+  "Milwaukee, WI": [0.6, 1.1, 0],
+  "Minneapolis, MN": [0, 1.4, 0],
+  "Modesto, CA": [-2.4, 0.3, 0],
+  "Myrtle Beach, SC": [1.9, -1.3, 0],
+  "Naples, FL": [2.2, -1.5, 0],
+  "Nashville, TN": [1.1, -0.5, 0],
+  "New Haven, CT": [2.6, 1.4, 0],
+  "New Orleans, LA": [0.5, -1.5, 0],
+  "New York, NY": [2.5, 1.2, 0],
+  "North Port, FL": [2.1, -1.5, 0],
+  "Ogden, UT": [-1.9, 0.9, 0],
+  "Oklahoma City, OK": [0.5, -0.5, 0],
+  "Omaha, NE": [0.8, 0.4, 0],
+  "Orlando, FL": [2.0, -1.3, 0],
+  "Oxnard, CA": [-2.4, 0.2, 0],
+  "Palm Bay, FL": [2.1, -1.4, 0],
+  "Panama City, FL": [1.8, -1.3, 0],
+  "Pensacola, FL": [1.5, -1.2, 0],
+  "Peoria, IL": [0.5, 0.7, 0],
+  "Philadelphia, PA": [2.4, 1.1, 0],
+  "Phoenix, AZ": [-1.5, 0, 0],
+  "Pittsburgh, PA": [2.1, 1.0, 0],
+  "Port St. Lucie, FL": [2.1, -1.5, 0],
+  "Portland, ME": [2.7, 1.7, 0],
+  "Portland, OR": [-2.3, 1.7, 0],
+  "Poughkeepsie, NY": [2.5, 1.3, 0],
+  "Prescott Valley, AZ": [-1.7, 0.2, 0],
+  "Providence, RI": [2.7, 1.6, 0],
+  "Provo, UT": [-1.8, 0.8, 0],
+  "Punta Gorda, FL": [2.2, -1.6, 0],
+  "Raleigh, NC": [1.8, -0.8, 0],
+  "Reading, PA": [2.4, 1.0, 0],
+  "Reno, NV": [-2.1, 0.6, 0],
+  "Richmond, VA": [2.1, 0.8, 0],
+  "Riverside, CA": [-2.4, 0.1, 0],
+  "Rochester, MN": [0.3, 1.3, 0],
+  "Rochester, NY": [2.4, 1.2, 0],
+  "Rockford, IL": [0.6, 1.0, 0],
+  "Sacramento, CA": [-2.4, 0.8, 0],
+  "Salisbury, MD": [2.5, 0.6, 0],
+  "Salt Lake City, UT": [-1.9, 0.7, 0],
+  "San Antonio, TX": [-0.5, -1.0, 0],
+  "San Diego, CA": [-2.3, -0.2, 0],
+  "San Francisco, CA": [-2.5, 0.6, 0],
+  "San Jose, CA": [-2.4, 0.5, 0],
+  "San Luis Obispo, CA": [-2.4, 0.4, 0],
+  "Santa Maria, CA": [-2.3, 0.3, 0],
+  "Santa Rosa, CA": [-2.4, 0.6, 0],
+  "Savannah, GA": [1.8, -1.1, 0],
+  "Scranton, PA": [2.4, 1.1, 0],
+  "Seattle, WA": [-2.3, 1.8, 0],
+  "Sebastian, FL": [2.1, -1.5, 0],
+  "Spokane, WA": [-2.2, 1.7, 0],
+  "Springfield, IL": [0.6, 0.6, 0],
+  "Springfield, MA": [2.6, 1.5, 0],
+  "Springfield, MO": [0.3, 0.3, 0],
+  "St. Louis, MO": [0.3, 0.5, 0],
+  "Stockton, CA": [-2.4, 0.4, 0],
+  "Tallahassee, FL": [1.9, -1.3, 0],
+  "Tampa, FL": [2.0, -1.4, 0],
+  "Toledo, OH": [1.1, 0.6, 0],
+  "Trenton, NJ": [2.5, 1.1, 0],
+  "Tucson, AZ": [-1.6, -0.2, 0],
+  "Tulsa, OK": [0.5, -0.5, 0],
+  "Urban Honolulu, HI": [-4.5, -2.5, 0], // Off mainland USA
+  "Virginia Beach, VA": [2.2, 0.7, 0],
+  "Visalia, CA": [-2.4, 0.2, 0],
+  "Washington, DC": [2.3, 0.8, 0],
+  "Wilmington, NC": [1.9, -1.0, 0],
+  "Winston, NC": [1.7, -0.8, 0],
+  "Worcester, MA": [2.6, 1.4, 0],
+  "York, PA": [2.4, 1.0, 0],
+  "Youngstown, OH": [1.3, 0.7, 0]
 };
+
+const citiesToLabel = ["New York, NY", "Los Angeles, CA", "Chicago, IL", "Houston, TX", "Phoenix, AZ"]
+
 
 export default function RealEstateMapComponent() {
   const mountRef = useRef<HTMLDivElement>(null)
@@ -114,7 +231,7 @@ export default function RealEstateMapComponent() {
     scene.add(pointLight)
 
     // Create nodes (cities)
-    const minSize = 0.03
+    const minSize = 0.05
     const maxSize = 0.15
 
     Object.entries(cityPositions).forEach(([cityName, position]) => {
@@ -129,15 +246,17 @@ export default function RealEstateMapComponent() {
       scene.add(sphere)
       spheresRef.current[cityName] = sphere
 
-      // Add label
-      const cityDiv = document.createElement('div')
-      cityDiv.className = 'label'
-      cityDiv.textContent = cityName
-      cityDiv.style.color = 'white'
-      cityDiv.style.fontSize = '12px'
-      const cityLabel = new CSS2DObject(cityDiv)
-      cityLabel.position.set(0, 0.1, 0)
-      sphere.add(cityLabel)
+      // Add label only for specified cities
+      if (citiesToLabel.includes(cityName)) {
+        const cityDiv = document.createElement('div')
+        cityDiv.className = 'label'
+        cityDiv.textContent = cityName
+        cityDiv.style.color = 'white'
+        cityDiv.style.fontSize = '12px'
+        const cityLabel = new CSS2DObject(cityDiv)
+        cityLabel.position.set(0, 0.1, 0)
+        sphere.add(cityLabel)
+      }
 
       // Add hover effect
       sphere.userData = { name: cityName }
