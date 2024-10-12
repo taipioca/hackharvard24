@@ -27,7 +27,7 @@ def predict(region, year):
         raise ValueError("Region not found.")
 
 @app.route('/predict_price', methods=['GET'])
-def send_message():
+def predict_price():
     data = json.loads(request.data)
     region = data.get('region')
     year = data.get('year')
@@ -41,6 +41,11 @@ def send_message():
     except Exception as e:
         logger.error('Error retrieving response: %s', str(e))
         return make_response(f"An error occurred while retrieving response: {str(e)}", 500)
+    
+@app.route('/price_over_time', methods=['GET'])
+# labels, value (list)
+def price_over_time():
+    pass
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
