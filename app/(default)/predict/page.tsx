@@ -443,7 +443,7 @@ export default function RealEstateMapComponent() {
       <div className="container mx-auto p-4">
         <div className="flex flex-col lg:flex-row gap-4">
           <div className="lg:w-2/3">
-            <h2 className="text-xl font-semibold mb-4 tracking-tighter">
+            <h2 className="text-xl font-semibold mb-4 tracking-wide">
               Median Price of Real Estate Over Time
             </h2>
             <div
@@ -471,7 +471,7 @@ export default function RealEstateMapComponent() {
                 value={[currentYear]}
                 onValueChange={(value) => setCurrentYear(value[0])}
               />
-              <p className="text-center mt-2">
+              <p className="text-center mt-2 text-base">
                 Price Development for Year: {currentYear}
               </p>
             </div>

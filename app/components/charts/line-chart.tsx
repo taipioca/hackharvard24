@@ -80,7 +80,7 @@ const LineChart: React.FC<LineChartProps> = ({ cityData, cityName }) => {
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="text-xl">
         <CardTitle>{cityName} Price Trend from 2008 to 2035</CardTitle>
       </CardHeader>
       <CardContent>

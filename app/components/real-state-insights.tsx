@@ -69,28 +69,11 @@ const RealStateInsights: React.FC<RealStateInsightsProps> = ({ cityName }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>
+        <CardTitle className="text-2xl">
           {cityName ? `Our Suggestion for ${cityName}` : "Our Suggestion"}
         </CardTitle>
       </CardHeader>
       <CardContent>
-        {/* Year Selection Dropdown */}
-        <div>
-          <label htmlFor="year-select" className="font-bold">
-            Select Year:{" "}
-          </label>
-          <select
-            id="year-select"
-            value={selectedYear}
-            onChange={handleYearChange}
-          >
-            {years.map((year) => (
-              <option key={year} value={year}>
-                {year}
-              </option>
-            ))}
-          </select>
-        </div>
 
         {/* Display loading indicator */}
         {isLoading && <div>Loading summary...</div>}
