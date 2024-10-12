@@ -160,7 +160,6 @@ const cityPositions: { [key: string]: [number, number, number] } = {
   "Winston, NC": [1.7, -0.8, 0],
   "Worcester, MA": [2.6, 1.4, 0],
   "York, PA": [2.4, 1.0, 0],
-  "Youngstown, OH": [1.3, 0.7, 0],
 };
 
 const citiesToLabel = [
@@ -625,7 +624,7 @@ export default function RealEstateMapComponent() {
             <div className="mt-4 w-full flex flex-col gap-2 items-center justify-center">
               <Slider
                 min={2008}
-                max={2023}
+                max={2035}
                 step={1}
                 value={[currentYear]}
                 onValueChange={(value) => setCurrentYear(value[0])}

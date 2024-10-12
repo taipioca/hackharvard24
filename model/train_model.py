@@ -5,7 +5,7 @@ from sklearn.pipeline import Pipeline
 import joblib
 
 df = pd.read_csv('input_df.csv')
-df = df.dropna(subset=['Region', 'Year', 'Median Sale Price', 'Median Sale to List Ratio'])
+df = df.dropna(subset=['Region', 'Year', 'Median Sale Price'])
 
 models = {}
 regions = df['Region'].unique()
@@ -14,7 +14,7 @@ for region in regions:
     region_data = df[df['Region'] == region]
     
     X = region_data[['Year']]
-    y = region_data[['Median Sale Price', 'Median Sale to List Ratio']]
+    y = region_data[['Median Sale Price']]
     
     preprocessor = ColumnTransformer(
         transformers=[
