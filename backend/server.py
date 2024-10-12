@@ -2,8 +2,11 @@ from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 import json
 import logging
+import os
 import joblib
 import pandas as pd
+from dotenv import load_dotenv
+import requests
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
@@ -25,6 +28,10 @@ def predict(region, year):
         return prediction
     else:
         raise ValueError("Region not found.")
+
+@app.route("/")
+def home():
+    return "Welcome to TerraP!"
 
 @app.route('/predict_price', methods=['GET'])
 def predict_price():
