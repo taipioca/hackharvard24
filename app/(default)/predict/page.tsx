@@ -13,7 +13,9 @@ import LineChart from "@/app/components/charts/line-chart";
 import axios from "axios";
 import RealEstateMap from "@/app/components/real-estate-map";
 import RealStateInsights from "@/app/components/real-state-insights";
-import { Toggle } from "@/app/components/ui/toggle";
+import { ModeToggle } from "@/app/components/ui/toggle";
+import { HomeIcon } from "lucide-react";
+import { Button } from "@/app/components/ui/button";
 
 // City positions
 const cityPositions: { [key: string]: [number, number, number] } = {
@@ -276,7 +278,8 @@ export default function RealEstateMapComponent() {
         const cityDiv = document.createElement("div");
         cityDiv.className = "label";
         cityDiv.textContent = cityName;
-        cityDiv.style.color = "white";
+        cityDiv.style.color =
+          localStorage.getItem("theme") === "dark" ? "white" : "black";
         cityDiv.style.fontSize = "12px";
         const cityLabel = new CSS2DObject(cityDiv);
         cityLabel.position.set(0, 0.1, 0);
@@ -361,26 +364,31 @@ export default function RealEstateMapComponent() {
   }, [currentYear, realEstateData]);
 
   return (
-    <div className="w-full h-full bg-gray-900 text-white">
-      <header className="sticky top-0 z-10 p-4 flex flex-row items-center justify-center mt-4">
+    <div className="w-full h-full">
+      <header className="sticky top-0 z-10 p-4 flex flex-row items-center justify-center mt-4 gap-2">
         <Input
           type="search"
           placeholder="Search properties..."
-          className="max-w-md mx-auto rounded-3xl"
+          className="max-w-md rounded-full h-[50px] w-[550px]"
         />
-        <Toggle />
+        <Button variant="outline" size="icon">
+          <HomeIcon className="h-[18px]" />
+        </Button>
+        <ModeToggle />
       </header>
       <div className="container mx-auto p-4">
         <div className="flex flex-col lg:flex-row gap-4">
           <div className="lg:w-2/3">
-            <h2 className="text-xl font-bold mb-4">Property Map</h2>
+            <h2 className="text-xl font-semibold mb-4 tracking-tighter ">
+              Property Across the Nation
+            </h2>
             <div
               ref={mountRef}
-              className="w-full h-[500px] bg-gray-800 rounded-lg relative"
+              className="w-full h-[500px] rounded-lg relative"
             >
               {selectedCity && (
                 <div
-                  className="absolute bg-gray-800 p-2 rounded text-sm"
+                  className="absolute p-2 rounded text-sm text-black dark:text-white"
                   style={{
                     left: `${selectedCity.position.x}px`,
                     top: `${selectedCity.position.y}px`,
@@ -391,7 +399,8 @@ export default function RealEstateMapComponent() {
                 </div>
               )}
             </div>
-            <div className="mt-4">
+            {/* slider */}
+            <div className="mt-4  w-full flex flex-col gap-2 items-center justify-center">
               <Slider
                 min={2004}
                 max={2023}
@@ -399,10 +408,12 @@ export default function RealEstateMapComponent() {
                 value={[currentYear]}
                 onValueChange={(value) => setCurrentYear(value[0])}
               />
-              <p className="text-center mt-2">Year: {currentYear}</p>
+              <p className="text-center mt-2">
+                Price Development for Year: {currentYear}
+              </p>
             </div>
           </div>
-          <div className="lg:w-1/3">
+          <div className="lg:w-1/3 flex flex-col gap-5">
             <RealEstateMap />
             <RealStateInsights />
           </div>
