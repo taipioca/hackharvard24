@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Home, DollarSign, TrendingUp, Users } from "lucide-react";
 import LineChart from "@/components/charts/line-chart";
 import { ModeToggle } from "@/components/ui/toggle";
+import { Map } from "@/components/real-estate-map";
 
 export default function RealEstateDashboard() {
   return (
