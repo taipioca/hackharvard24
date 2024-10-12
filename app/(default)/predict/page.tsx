@@ -7,12 +7,13 @@ import {
   CSS2DRenderer,
   CSS2DObject,
 } from "three/examples/jsm/renderers/CSS2DRenderer.js";
-import { Slider } from "@/components/ui/slider";
-import { Input } from "@/components/ui/input";
-import LineChart from "@/components/charts/line-chart";
+import { Slider } from "@/app/components/ui/slider";
+import { Input } from "@/app/components/ui/input";
+import LineChart from "@/app/components/charts/line-chart";
 import axios from "axios";
-import RealEstateMap from "@/components/real-estate-map";
-import RealStateInsights from "@/components/real-state-insights";
+import RealEstateMap from "@/app/components/real-estate-map";
+import RealStateInsights from "@/app/components/real-state-insights";
+import { Toggle } from "@/app/components/ui/toggle";
 
 // City positions
 const cityPositions: { [key: string]: [number, number, number] } = {
@@ -172,11 +173,16 @@ const cityPositions: { [key: string]: [number, number, number] } = {
   "Winston, NC": [1.7, -0.8, 0],
   "Worcester, MA": [2.6, 1.4, 0],
   "York, PA": [2.4, 1.0, 0],
-  "Youngstown, OH": [1.3, 0.7, 0]
+  "Youngstown, OH": [1.3, 0.7, 0],
 };
 
-const citiesToLabel = ["New York, NY", "Los Angeles, CA", "Chicago, IL", "Houston, TX", "Phoenix, AZ"]
-
+const citiesToLabel = [
+  "New York, NY",
+  "Los Angeles, CA",
+  "Chicago, IL",
+  "Houston, TX",
+  "Phoenix, AZ",
+];
 
 export default function RealEstateMapComponent() {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -267,14 +273,14 @@ export default function RealEstateMapComponent() {
 
       // Add label only for specified cities
       if (citiesToLabel.includes(cityName)) {
-        const cityDiv = document.createElement('div')
-        cityDiv.className = 'label'
-        cityDiv.textContent = cityName
-        cityDiv.style.color = 'white'
-        cityDiv.style.fontSize = '12px'
-        const cityLabel = new CSS2DObject(cityDiv)
-        cityLabel.position.set(0, 0.1, 0)
-        sphere.add(cityLabel)
+        const cityDiv = document.createElement("div");
+        cityDiv.className = "label";
+        cityDiv.textContent = cityName;
+        cityDiv.style.color = "white";
+        cityDiv.style.fontSize = "12px";
+        const cityLabel = new CSS2DObject(cityDiv);
+        cityLabel.position.set(0, 0.1, 0);
+        sphere.add(cityLabel);
       }
 
       // Add hover effect
@@ -362,6 +368,7 @@ export default function RealEstateMapComponent() {
           placeholder="Search properties..."
           className="max-w-md mx-auto rounded-3xl"
         />
+        <Toggle />
       </header>
       <div className="container mx-auto p-4">
         <div className="flex flex-col lg:flex-row gap-4">
