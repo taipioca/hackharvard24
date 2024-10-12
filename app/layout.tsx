@@ -11,7 +11,7 @@ const inter = Inter_Tight({
 });
 
 export const metadata: Metadata = {
-  title: "Relatitycs",
+  title: "Realytics",
   description: "A next-gen real-estate predictor",
 };
 
