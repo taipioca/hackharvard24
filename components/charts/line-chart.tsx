@@ -10,6 +10,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
 ChartJS.register(
   LineElement,
@@ -55,7 +56,18 @@ const LineChart = () => {
     ...genericOptions,
   };
 
-  return <Line data={data} options={options} />;
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Trend</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="overflow-x-auto">
+          <Line data={data} options={options} />{" "}
+        </div>
+      </CardContent>
+    </Card>
+  );
 };
 
 export default LineChart;
