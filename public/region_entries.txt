@@ -1,0 +1,158 @@
+Akron, OH
+Albany, NY
+Albuquerque, NM
+Allentown, PA
+Asheville, NC
+Atlanta, GA
+Augusta, GA
+Austin, TX
+Bakersfield, CA
+Baltimore, MD
+Barnstable Town, MA
+Baton Rouge, LA
+Birmingham, AL
+Boise City, ID
+Boston, MA
+Boulder, CO
+Bridgeport, CT
+Buffalo, NY
+Canton, OH
+Cape Coral, FL
+Cedar Rapids, IA
+Charleston, SC
+Charlotte, NC
+Chattanooga, TN
+Chicago, IL
+Cincinnati, OH
+Cleveland, OH
+Colorado Springs, CO
+Columbia, SC
+Columbus, OH
+Corpus Christi, TX
+Crestview, FL
+Dallas, TX
+Davenport, IA
+Dayton, OH
+Deltona, FL
+Denver, CO
+Des Moines, IA
+Detroit, MI
+Duluth, MN
+Durham, NC
+El Paso, TX
+Eugene, OR
+Fayetteville, AR
+Fayetteville, NC
+Flint, MI
+Fort Collins, CO
+Fresno, CA
+Grand Rapids, MI
+Greeley, CO
+Greensboro, NC
+Greenville, SC
+Harrisburg, PA
+Hartford, CT
+Hickory, NC
+Houston, TX
+Indianapolis, IN
+Jacksonville, FL
+Kansas City, MO
+Killeen, TX
+Knoxville, TN
+Lakeland, FL
+Lancaster, PA
+Lansing, MI
+Las Vegas, NV
+Lexington, KY
+Little Rock, AR
+Los Angeles, CA
+Louisville, KY
+Lubbock, TX
+Madison, WI
+Memphis, TN
+Miami, FL
+Milwaukee, WI
+Minneapolis, MN
+Modesto, CA
+Myrtle Beach, SC
+Nashville, TN
+New Haven, CT
+New York, NY
+North Port, FL
+Ogden, UT
+Oklahoma City, OK
+Omaha, NE
+Orlando, FL
+Oxnard, CA
+Palm Bay, FL
+Pensacola, FL
+Peoria, IL
+Philadelphia, PA
+Phoenix, AZ
+Pittsburgh, PA
+Port St. Lucie, FL
+Portland, ME
+Portland, OR
+Prescott Valley, AZ
+Providence, RI
+Provo, UT
+Punta Gorda, FL
+Raleigh, NC
+Reading, PA
+Reno, NV
+Richmond, VA
+Riverside, CA
+Rochester, NY
+Rockford, IL
+Sacramento, CA
+Salisbury, MD
+Salt Lake City, UT
+San Antonio, TX
+San Diego, CA
+San Francisco, CA
+San Jose, CA
+Santa Maria, CA
+Santa Rosa, CA
+Savannah, GA
+Scranton, PA
+Seattle, WA
+Spokane, WA
+Springfield, MA
+Springfield, MO
+St. Louis, MO
+Stockton, CA
+Tallahassee, FL
+Tampa, FL
+Toledo, OH
+Trenton, NJ
+Tucson, AZ
+Tulsa, OK
+United States
+Urban Honolulu, HI
+Virginia Beach, VA
+Visalia, CA
+Washington, DC
+Winston, NC
+Worcester, MA
+York, PA
+Youngstown, OH
+Bremerton, WA
+Clarksville, TN
+San Luis Obispo, CA
+Sebastian, FL
+Daphne, AL
+Huntsville, AL
+Lincoln, NE
+Springfield, IL
+Lake Havasu City, AZ
+Naples, FL
+Jacksonville, NC
+Panama City, FL
+Hilton Head Island, SC
+Wilmington, NC
+Columbia, MO
+New Orleans, LA
+Bend, OR
+Concord, NH
+Poughkeepsie, NY
+Rochester, MN
