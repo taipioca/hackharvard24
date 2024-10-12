@@ -209,7 +209,7 @@ export default function RealEstateMapComponent() {
 
   useEffect(() => {
     initData();
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (!mountRef.current) return;
@@ -401,7 +401,8 @@ export default function RealEstateMapComponent() {
       const meanData: { [key: string]: number } = {};
       Object.entries(realEstateData).forEach(([year, cities]) => {
         const values = Object.values(cities);
-        meanData[year] = values.reduce((sum, value) => sum + value, 0) / values.length;
+        meanData[year] =
+          values.reduce((sum, value) => sum + value, 0) / values.length;
       });
       return meanData;
     }
@@ -462,15 +463,22 @@ export default function RealEstateMapComponent() {
             </div>
           </div>
           <div className="lg:w-1/3 flex flex-col gap-5">
-            <RealEstateMap cityData={getCityInsights} cityName={clickedCity || "USA"} year={currentYear.toString()} />
+            <RealEstateMap
+              cityData={getCityInsights}
+              cityName={clickedCity || "USA"}
+              year={currentYear.toString()}
+            />
             <RealStateInsights cityName={clickedCity || "USA"} />
           </div>
         </div>
       </div>
-        <div className="container mx-auto mt-4 mb-20">
+      <div className="container mx-auto mt-4 mb-20">
         <div className="flex flex-col lg:flex-row gap-4">
           <div className="lg:w-2/3">
-            <LineChart cityData={getCityInsights} cityName={clickedCity || "Average"} />
+            <LineChart
+              cityData={getCityInsights}
+              cityName={clickedCity || "Average"}
+            />
           </div>
           <div className="lg:w-1/3">
             <CompareDemo />
