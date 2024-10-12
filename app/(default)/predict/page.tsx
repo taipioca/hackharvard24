@@ -30,7 +30,7 @@ const cityPositions: { [key: string]: [number, number, number] } = {
   "Bakersfield, CA": [-2.4, 0.3, 0],
   "Baltimore, MD": [2.5, 0.7, 0],
   "Barnstable Town, MA": [2.7, 1.6, 0],
-  "Baton Rouge, LA": [0.5, -1.4, 0],
+  "Baton Rouge, LA": [0.5, -1.2, 0],
   "Birmingham, AL": [1.2, -1.0, 0],
   "Boise City, ID": [-2.1, 1.3, 0],
   "Boston, MA": [2.7, 1.5, 0],
@@ -349,39 +349,7 @@ const migrations = [
   { from: "Washington, DC", to: "Houston, TX" },
   { from: "Seattle, WA", to: "Boston, MA" },
   { from: "Detroit, MI", to: "Los Angeles, CA" },
-  { from: "San Francisco, CA", to: "Miami, FL" },
-  // { from: "Los Angeles, CA", to: "New York, NY" },
-  // { from: "Denver, CO", to: "Miami, FL" },
-  // { from: "Las Vegas, NV", to: "Chicago, IL" },
-  // { from: "San Antonio, TX", to: "San Francisco, CA" },
-  // { from: "Phoenix, AZ", to: "Atlanta, GA" },
-  // { from: "Charlotte, NC", to: "Los Angeles, CA" },
-  // { from: "Cleveland, OH", to: "Seattle, WA" },
-  // { from: "Boston, MA", to: "Atlanta, GA" },
-  // { from: "Chicago, IL", to: "New Orleans, LA" },
-  // { from: "Omaha, NE", to: "New York, NY" },
-  // { from: "San Diego, CA", to: "Houston, TX" },
-  // { from: "Philadelphia, PA", to: "San Jose, CA" },
-  // { from: "Detroit, MI", to: "Miami, FL" },
-  // { from: "New Orleans, LA", to: "Los Angeles, CA" },
-  // { from: "Raleigh, NC", to: "San Francisco, CA" },
-  // { from: "Salt Lake City, UT", to: "Boston, MA" },
-  // { from: "Minneapolis, MN", to: "Miami, FL" },
-  // { from: "Indianapolis, IN", to: "Seattle, WA" },
-  // { from: "Cincinnati, OH", to: "San Diego, CA" },
-  // { from: "Portland, OR", to: "Chicago, IL" },
-  // { from: "Tampa, FL", to: "Las Vegas, NV" },
-  // { from: "Nashville, TN", to: "San Francisco, CA" },
-  // { from: "Birmingham, AL", to: "New York, NY" },
-  // { from: "Buffalo, NY", to: "Los Angeles, CA" },
-  // { from: "Cleveland, OH", to: "Dallas, TX" },
-  // { from: "Jacksonville, FL", to: "Los Angeles, CA" },
-  // { from: "Fort Worth, TX", to: "Seattle, WA" },
-  // { from: "Austin, TX", to: "Los Angeles, CA" },
-  // { from: "Virginia Beach, VA", to: "Miami, FL" },
-  // { from: "Wichita, KS", to: "Los Angeles, CA" },
-  // { from: "Milwaukee, WI", to: "New York, NY" },
-  // { from: "Tucson, AZ", to: "Seattle, WA" }
+  { from: "San Francisco, CA", to: "Miami, FL" }
 ];
 
 export default function RealEstateMapComponent() {
@@ -491,22 +459,22 @@ export default function RealEstateMapComponent() {
       sphere.userData = { name: cityName };
     });
 
-    // Create migration edges
-    migrations.forEach(({ from, to }) => {
-      const start = cityMeshes[from]?.position;
-      const end = cityMeshes[to]?.position;
+    // // Create migration edges
+    // migrations.forEach(({ from, to }) => {
+    //   const start = cityMeshes[from]?.position;
+    //   const end = cityMeshes[to]?.position;
 
-      if (start && end) {
-        const points = [];
-        points.push(start.clone());
-        points.push(end.clone());
+    //   if (start && end) {
+    //     const points = [];
+    //     points.push(start.clone());
+    //     points.push(end.clone());
 
-        const geometry = new THREE.BufferGeometry().setFromPoints(points);
-        const lineMaterial = new THREE.LineBasicMaterial({ color: 0xd3d3d3, transparent: true, opacity: 0.2 }); // Red color for migration lines
-        const line = new THREE.Line(geometry, lineMaterial);
-        scene.add(line);
-      }
-    });
+    //     const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    //     const lineMaterial = new THREE.LineBasicMaterial({ color: 0xd3d3d3, transparent: true, opacity: 0.2 }); // Red color for migration lines
+    //     const line = new THREE.Line(geometry, lineMaterial);
+    //     scene.add(line);
+    //   }
+    // });
 
     camera.position.z = 3;
 
