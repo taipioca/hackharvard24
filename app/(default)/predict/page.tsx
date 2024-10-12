@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useMemo } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import {
@@ -30,7 +30,7 @@ const cityPositions: { [key: string]: [number, number, number] } = {
   "Bakersfield, CA": [-2.4, 0.3, 0],
   "Baltimore, MD": [2.5, 0.7, 0],
   "Barnstable Town, MA": [2.7, 1.6, 0],
-  "Baton Rouge, LA": [0.5, -1.4, 0],
+  "Baton Rouge, LA": [0.5, -1.2, 0],
   "Birmingham, AL": [1.2, -1.0, 0],
   "Boise City, ID": [-2.1, 1.3, 0],
   "Boston, MA": [2.7, 1.5, 0],
@@ -349,39 +349,7 @@ const migrations = [
   { from: "Washington, DC", to: "Houston, TX" },
   { from: "Seattle, WA", to: "Boston, MA" },
   { from: "Detroit, MI", to: "Los Angeles, CA" },
-  { from: "San Francisco, CA", to: "Miami, FL" },
-  // { from: "Los Angeles, CA", to: "New York, NY" },
-  // { from: "Denver, CO", to: "Miami, FL" },
-  // { from: "Las Vegas, NV", to: "Chicago, IL" },
-  // { from: "San Antonio, TX", to: "San Francisco, CA" },
-  // { from: "Phoenix, AZ", to: "Atlanta, GA" },
-  // { from: "Charlotte, NC", to: "Los Angeles, CA" },
-  // { from: "Cleveland, OH", to: "Seattle, WA" },
-  // { from: "Boston, MA", to: "Atlanta, GA" },
-  // { from: "Chicago, IL", to: "New Orleans, LA" },
-  // { from: "Omaha, NE", to: "New York, NY" },
-  // { from: "San Diego, CA", to: "Houston, TX" },
-  // { from: "Philadelphia, PA", to: "San Jose, CA" },
-  // { from: "Detroit, MI", to: "Miami, FL" },
-  // { from: "New Orleans, LA", to: "Los Angeles, CA" },
-  // { from: "Raleigh, NC", to: "San Francisco, CA" },
-  // { from: "Salt Lake City, UT", to: "Boston, MA" },
-  // { from: "Minneapolis, MN", to: "Miami, FL" },
-  // { from: "Indianapolis, IN", to: "Seattle, WA" },
-  // { from: "Cincinnati, OH", to: "San Diego, CA" },
-  // { from: "Portland, OR", to: "Chicago, IL" },
-  // { from: "Tampa, FL", to: "Las Vegas, NV" },
-  // { from: "Nashville, TN", to: "San Francisco, CA" },
-  // { from: "Birmingham, AL", to: "New York, NY" },
-  // { from: "Buffalo, NY", to: "Los Angeles, CA" },
-  // { from: "Cleveland, OH", to: "Dallas, TX" },
-  // { from: "Jacksonville, FL", to: "Los Angeles, CA" },
-  // { from: "Fort Worth, TX", to: "Seattle, WA" },
-  // { from: "Austin, TX", to: "Los Angeles, CA" },
-  // { from: "Virginia Beach, VA", to: "Miami, FL" },
-  // { from: "Wichita, KS", to: "Los Angeles, CA" },
-  // { from: "Milwaukee, WI", to: "New York, NY" },
-  // { from: "Tucson, AZ", to: "Seattle, WA" }
+  { from: "San Francisco, CA", to: "Miami, FL" }
 ];
 
 export default function RealEstateMapComponent() {
@@ -396,6 +364,7 @@ export default function RealEstateMapComponent() {
   const [realEstateData, setRealEstateData] = useState<{
     [key: string]: { [key: string]: number };
   }>({});
+  const [clickedCity, setClickedCity] = useState<string | null>(null);
 
   const fetchData = async () => {
     try {
@@ -414,7 +383,7 @@ export default function RealEstateMapComponent() {
 
   useEffect(() => {
     initData();
-  }, []);
+  }, [])
 
   useEffect(() => {
     if (!mountRef.current) return;
@@ -491,26 +460,22 @@ export default function RealEstateMapComponent() {
       sphere.userData = { name: cityName };
     });
 
-    // Create migration edges
-    migrations.forEach(({ from, to }) => {
-      const start = cityMeshes[from]?.position;
-      const end = cityMeshes[to]?.position;
+    // // Create migration edges
+    // migrations.forEach(({ from, to }) => {
+    //   const start = cityMeshes[from]?.position;
+    //   const end = cityMeshes[to]?.position;
 
-      if (start && end) {
-        const points = [];
-        points.push(start.clone());
-        points.push(end.clone());
+    //   if (start && end) {
+    //     const points = [];
+    //     points.push(start.clone());
+    //     points.push(end.clone());
 
-        const geometry = new THREE.BufferGeometry().setFromPoints(points);
-        const lineMaterial = new THREE.LineBasicMaterial({
-          color: 0xd3d3d3,
-          transparent: true,
-          opacity: 0.2,
-        }); // Red color for migration lines
-        const line = new THREE.Line(geometry, lineMaterial);
-        scene.add(line);
-      }
-    });
+    //     const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    //     const lineMaterial = new THREE.LineBasicMaterial({ color: 0xd3d3d3, transparent: true, opacity: 0.2 }); // Red color for migration lines
+    //     const line = new THREE.Line(geometry, lineMaterial);
+    //     scene.add(line);
+    //   }
+    // });
 
     camera.position.z = 3;
 
@@ -544,6 +509,25 @@ export default function RealEstateMapComponent() {
         });
       } else {
         setSelectedCity(null);
+      }
+    });
+
+    window.addEventListener("click", (event) => {
+      if (!mountRef.current) return;
+      const rect = mountRef.current.getBoundingClientRect();
+      mouse.x =
+        ((event.clientX - rect.left) / mountRef.current.clientWidth) * 2 - 1;
+      mouse.y =
+        -((event.clientY - rect.top) / mountRef.current.clientHeight) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(scene.children);
+
+      if (intersects.length > 0 && intersects[0].object instanceof THREE.Mesh) {
+        const cityData = intersects[0].object.userData;
+        setClickedCity(cityData.name);
+      } else {
+        setClickedCity(null);
       }
     });
 
@@ -585,6 +569,23 @@ export default function RealEstateMapComponent() {
     });
   }, [currentYear, realEstateData]);
 
+  const getCityInsights = useMemo(() => {
+    if (!clickedCity || !realEstateData) {
+      // Calculate mean of all cities if no city is clicked
+      const meanData: { [key: string]: number } = {};
+      Object.entries(realEstateData).forEach(([year, cities]) => {
+        const values = Object.values(cities);
+        meanData[year] = values.reduce((sum, value) => sum + value, 0) / values.length;
+      });
+      return meanData;
+    }
+
+    return Object.entries(realEstateData).reduce((acc, [year, cities]) => {
+      acc[year] = cities[clickedCity] || 0;
+      return acc;
+    }, {} as { [key: string]: number });
+  }, [clickedCity, realEstateData]);
+
   return (
     <div className="w-full h-full">
       <header className="sticky top-0 z-10 p-4 flex flex-row items-center justify-center mt-4 gap-2">
@@ -601,8 +602,8 @@ export default function RealEstateMapComponent() {
       <div className="container mx-auto p-4">
         <div className="flex flex-col lg:flex-row gap-4">
           <div className="lg:w-2/3">
-            <h2 className="text-xl font-semibold mb-4 tracking-tighter ">
-              Property Across the Nation
+            <h2 className="text-xl font-semibold mb-4 tracking-tighter">
+              Median Price of Real Estate Over Time
             </h2>
             <div
               ref={mountRef}
@@ -621,8 +622,7 @@ export default function RealEstateMapComponent() {
                 </div>
               )}
             </div>
-            {/* slider */}
-            <div className="mt-4  w-full flex flex-col gap-2 items-center justify-center">
+            <div className="mt-4 w-full flex flex-col gap-2 items-center justify-center">
               <Slider
                 min={2008}
                 max={2023}
@@ -636,13 +636,13 @@ export default function RealEstateMapComponent() {
             </div>
           </div>
           <div className="lg:w-1/3 flex flex-col gap-5">
-            <RealEstateMap />
-            <RealStateInsights />
+            <RealEstateMap cityData={getCityInsights} cityName={clickedCity || "USA"} />
+            <RealStateInsights cityName={clickedCity || "USA"} />
           </div>
         </div>
       </div>
       <div className="container mx-auto mt-4">
-        <LineChart />
+        <LineChart cityData={getCityInsights} cityName={clickedCity || "Average"} />
       </div>
     </div>
   );
