@@ -5,6 +5,13 @@ import logging
 import joblib
 import pandas as pd
 import sqlite3
+from langchain_openai.chat_models import ChatOpenAI
+from langchain_core.output_parsers import StrOutputParser
+from langchain.prompts import ChatPromptTemplate
+from dotenv import load_dotenv
+import os
+import numpy as np  
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
@@ -30,6 +37,82 @@ def predict(region, year):
 @app.route("/")
 def home():
     return "Welcome to TerraP!"
+
+@app.route('/ai_summary', methods=['POST'])
+def ai_summary():
+    data = request.json
+    region = data.get('region')
+    year = data.get('year')
+    
+    if not region or not year:
+        return make_response("Region and year are required.", 400)
+    
+    # Get OpenAI API key from environment variable
+    OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+    if not OPENAI_API_KEY:
+        logger.error('OpenAI API key not found.')
+        return make_response("OpenAI API key not found.", 500)
+    
+    # Initialize the ChatOpenAI model
+    try:
+        prediction = predict(region, year)
+        # Handle if prediction is a list or array
+        if isinstance(prediction, (list, np.ndarray)):
+            predicted_value = prediction[0]
+        else:
+            predicted_value = prediction
+        # Convert predicted_value to a native Python float
+        if isinstance(predicted_value, np.ndarray):
+            predicted_value = predicted_value.item()
+        else:
+            predicted_value = float(predicted_value)
+    except Exception as e:
+        logger.error('Error getting prediction: %s', str(e))
+        return make_response(f"An error occurred while getting the prediction: {str(e)}", 500)
+    
+    # Initialize the ChatOpenAI model
+    model = ChatOpenAI(openai_api_key=OPENAI_API_KEY, model_name="gpt-4o-mini", temperature=0.7, max_tokens=500)
+    parser = StrOutputParser()
+    
+    # Define the prompt template
+    template = """
+    Analyze the real estate market in {region} for the year {year}.
+    The predicted average median sale price is ${predicted_value:,.2f}.
+    Consider factors such as historical price trends, current market conditions, and development projects.
+    Assume that cities with significant development and growth are good opportunities for investment.
+    Provide a summary of your analysis based on the predicted sale price.
+    **Provide a concise summary of your analysis in 5 sentences.**
+    """
+    prompt = ChatPromptTemplate.from_template(template)
+    
+    # Create the chain
+    chain = prompt | model | parser
+    
+    # Run the chain with the input variables
+    try:
+        result = chain.invoke({'region': region, 'year': year, 'predicted_value': predicted_value})
+        return jsonify({'region': region, 'year': year, 'predicted_value': predicted_value, 'summary': result})
+    except Exception as e:
+        logger.error('Error generating AI summary: %s', str(e))
+        return make_response(f"An error occurred while generating the summary: {str(e)}", 500)
+    
+
+# @app.route('/ai_summary', methods=['POST'])
+# def ai_summary():
+#     data = request.json
+#     region = data.get('region')
+#     year = data.get('year')
+    
+#     # Prepare the prompt for the AI model
+#     prompt = f"Provide a market analysis and recommendation for buying property in {region} for the year {year}."
+    
+#     # Generate the AI summary
+#     try:
+#         result = chat_model.invoke(prompt)
+#         recommendation = result.get('text', 'No recommendation provided.')
+#         return jsonify({'region': region, 'year': year, 'recommendation': recommendation})
+#     except Exception as e:
+#         return make_response(f"An error occurred while generating the summary: {str(e)}", 500)
 
 @app.route('/predict_price', methods=['GET'])
 def predict_price():

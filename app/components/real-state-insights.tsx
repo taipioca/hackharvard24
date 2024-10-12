@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
 // Define the props interface for RealStateInsights
@@ -10,11 +10,58 @@ const RealStateInsights: React.FC<RealStateInsightsProps> = ({ cityName }) => {
   // State to hold the selected year
   const [selectedYear, setSelectedYear] = useState<number>(2025);
 
+  // State to hold the summary from the backend
+  const [summary, setSummary] = useState<string>("");
+
+  // State to manage loading and error states
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
   // Handler for year change
   const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedYear(Number(event.target.value));
-    // Add your prediction logic here based on selectedYear
   };
+
+  // Fetch summary from the backend whenever cityName or selectedYear changes
+  useEffect(() => {
+    // Only fetch if cityName is provided
+    if (cityName) {
+      const fetchSummary = async () => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+          const response = await fetch("http://127.0.0.1:5000/ai_summary", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              region: "Phoenix, AZ",
+              year: selectedYear,
+            }),
+          });
+
+          if (!response.ok) {
+            // Handle non-2xx HTTP responses
+            const errorText = await response.text();
+            throw new Error(errorText || "Error fetching summary");
+          }
+
+          const data = await response.json();
+
+          // Assuming the backend returns { summary: "..." }
+          setSummary(data.summary || "No summary available.");
+        } catch (err: any) {
+          setError(err.message || "An error occurred.");
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      fetchSummary();
+    }
+  }, [cityName, selectedYear]);
 
   // Generate years for dropdown (2025 to 2050, every 5 years)
   const years = Array.from({ length: 6 }, (_, index) => 2025 + index * 5);
@@ -22,17 +69,47 @@ const RealStateInsights: React.FC<RealStateInsightsProps> = ({ cityName }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{cityName ? `Our Suggestion for ${cityName}` : "Our Suggestion"}</CardTitle>
+        <CardTitle>
+          {cityName ? `Our Suggestion for ${cityName}` : "Our Suggestion"}
+        </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="overflow-x-auto font-bold">Buy this property</div>
-        <div>Why we say that?</div>
+        {/* Year Selection Dropdown */}
         <div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit
-          animi accusamus iste excepturi dolor error natus culpa aspernatur iure
-          quo. Animi facilis cumque officiis voluptate in sit nostrum
-          dignissimos similique?
+          <label htmlFor="year-select" className="font-bold">
+            Select Year:{" "}
+          </label>
+          <select
+            id="year-select"
+            value={selectedYear}
+            onChange={handleYearChange}
+          >
+            {years.map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
         </div>
+
+        {/* Display loading indicator */}
+        {isLoading && <div>Loading summary...</div>}
+
+        {/* Display error message */}
+        {error && <div className="text-red-500">Error: {error}</div>}
+
+        {/* Display summary */}
+        {!isLoading && !error && summary && (
+          <div>
+            <div className="font-bold mt-4">Summary:</div>
+            <div>{summary}</div>
+          </div>
+        )}
+
+        {/* Display a message if no summary is available */}
+        {!isLoading && !error && !summary && (
+          <div>No summary available for the selected region and year.</div>
+        )}
       </CardContent>
     </Card>
   );
