@@ -92,7 +92,6 @@ def dump_data():
             if year not in data_dict:
                 data_dict[year] = {}
             data_dict[year][region] = price
-
         return jsonify(data_dict)
         
     except Exception as e:
