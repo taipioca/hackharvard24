@@ -5,6 +5,14 @@ import logging
 import joblib
 import pandas as pd
 import sqlite3
+from langchain_openai.chat_models import ChatOpenAI
+from langchain_core.output_parsers import StrOutputParser
+from langchain.prompts import ChatPromptTemplate
+from langchain_community.document_loaders import TextLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
@@ -13,6 +21,10 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
 
 models = joblib.load('region_models.pkl')
+
+
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+
 
 def predict(region, year):
     if region in models:
@@ -30,6 +42,60 @@ def predict(region, year):
 @app.route("/")
 def home():
     return "Welcome to TerraP!"
+
+@app.route('/ai_summary', methods=['POST'])
+def ai_summary():
+    data = request.json
+    region = data.get('region')
+    year = data.get('year')
+    
+    if not region or not year:
+        return make_response("Region and year are required.", 400)
+    
+    # Get OpenAI API key from environment variable
+    OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+    if not OPENAI_API_KEY:
+        logger.error('OpenAI API key not found.')
+        return make_response("OpenAI API key not found.", 500)
+    
+    # Initialize the ChatOpenAI model
+    model = ChatOpenAI(openai_api_key=OPENAI_API_KEY, model_name="gpt-4")
+    parser = StrOutputParser()
+    
+    # Define the prompt template
+    template = """
+    Is it a good time to invest in real estate in {region} based on historical price trends and current market conditions for the year {year}?
+    Provide a detailed analysis and recommendation.
+    """
+    prompt = ChatPromptTemplate.from_template(template)
+    
+    chain = prompt | model | parser
+    
+    # Run the chain with the input variables
+    try:
+        result = chain.run({'region': region, 'year': year})
+        return jsonify({'region': region, 'year': year, 'summary': result})
+    except Exception as e:
+        logger.error('Error generating AI summary: %s', str(e))
+        return make_response(f"An error occurred while generating the summary: {str(e)}", 500)
+    
+
+# @app.route('/ai_summary', methods=['POST'])
+# def ai_summary():
+#     data = request.json
+#     region = data.get('region')
+#     year = data.get('year')
+    
+#     # Prepare the prompt for the AI model
+#     prompt = f"Provide a market analysis and recommendation for buying property in {region} for the year {year}."
+    
+#     # Generate the AI summary
+#     try:
+#         result = chat_model.invoke(prompt)
+#         recommendation = result.get('text', 'No recommendation provided.')
+#         return jsonify({'region': region, 'year': year, 'recommendation': recommendation})
+#     except Exception as e:
+#         return make_response(f"An error occurred while generating the summary: {str(e)}", 500)
 
 @app.route('/predict_price', methods=['GET'])
 def predict_price():
