@@ -45,7 +45,9 @@ def predict_price():
 @app.route('/price_over_time', methods=['GET'])
 # labels, value (list)
 def price_over_time():
-    pass
+    data = json.loads(request.data)
+    region = data.get('region')
+    year = data.get('year')
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
