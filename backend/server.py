@@ -21,6 +21,10 @@ logging.basicConfig(level=logging.DEBUG)
 
 models = joblib.load('region_models.pkl')
 
+
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+
+
 def predict(region, year):
     if region in models:
         model = models[region]
