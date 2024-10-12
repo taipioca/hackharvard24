@@ -5,7 +5,6 @@ import logging
 import joblib
 import pandas as pd
 import sqlite3
-import openai
 from langchain_openai.chat_models import ChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
 from langchain.prompts import ChatPromptTemplate
