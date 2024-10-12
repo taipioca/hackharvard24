@@ -9,47 +9,80 @@ import { Card, CardTitle, CardContent, CardDescription, CardFooter, CardHeader }
 import { Input } from '@/components/ui/input.tsx'
 import { ModeToggle } from '@/components/ui/toggle.tsx'
 import LineChart from '@/components/charts/line-chart.tsx'
-import { Home, DollarSign, TrendingUp, Users } from "lucide-react";
-
-// Real estate data for 20 years
-const realEstateData: { [key: string]: { [city: string]: number } } = {
-  "2004": {"New York City": 400000, "Los Angeles": 350000, "Chicago": 250000, "Houston": 180000, "Phoenix": 150000, "Philadelphia": 220000, "San Antonio": 140000, "San Diego": 340000, "Dallas": 180000, "San Jose": 380000, "Miami": 280000, "Atlanta": 160000, "Seattle": 300000, "Denver": 210000, "Boston": 400000, "Las Vegas": 220000},
-  "2005": {"New York City": 420000, "Los Angeles": 370000, "Chicago": 255000, "Houston": 185000, "Phoenix": 160000, "Philadelphia": 230000, "San Antonio": 145000, "San Diego": 360000, "Dallas": 190000, "San Jose": 400000, "Miami": 300000, "Atlanta": 170000, "Seattle": 320000, "Denver": 220000, "Boston": 420000, "Las Vegas": 240000},
-  "2006": {"New York City": 420000, "Los Angeles": 370000, "Chicago": 255000, "Houston": 185000, "Phoenix": 160000, "Philadelphia": 230000, "San Antonio": 145000, "San Diego": 360000, "Dallas": 190000, "San Jose": 400000, "Miami": 300000, "Atlanta": 170000, "Seattle": 320000, "Denver": 220000, "Boston": 420000, "Las Vegas": 240000},
-  "2007": {"New York City": 3000, "Los Angeles": 370000, "Chicago": 255000, "Houston": 185000, "Phoenix": 160000, "Philadelphia": 230000, "San Antonio": 145000, "San Diego": 360000, "Dallas": 190000, "San Jose": 400000, "Miami": 300000, "Atlanta": 170000, "Seattle": 320000, "Denver": 220000, "Boston": 420000, "Las Vegas": 240000},
-  "2008": {"New York City": 420000, "Los Angeles": 370000, "Chicago": 255000, "Houston": 185000, "Phoenix": 160000, "Philadelphia": 230000, "San Antonio": 145000, "San Diego": 360000, "Dallas": 190000, "San Jose": 400000, "Miami": 300000, "Atlanta": 170000, "Seattle": 320000, "Denver": 220000, "Boston": 420000, "Las Vegas": 240000},
-  "2009": {"New York City": 420000, "Los Angeles": 370000, "Chicago": 255000, "Houston": 185000, "Phoenix": 160000, "Philadelphia": 230000, "San Antonio": 145000, "San Diego": 360000, "Dallas": 190000, "San Jose": 400000, "Miami": 300000, "Atlanta": 170000, "Seattle": 320000, "Denver": 220000, "Boston": 420000, "Las Vegas": 240000},
-  "2010": {"New York City": 420000, "Los Angeles": 370000, "Chicago": 255000, "Houston": 185000, "Phoenix": 160000, "Philadelphia": 230000, "San Antonio": 145000, "San Diego": 360000, "Dallas": 190000, "San Jose": 400000, "Miami": 300000, "Atlanta": 170000, "Seattle": 320000, "Denver": 220000, "Boston": 420000, "Las Vegas": 240000},
-  "2023": {"New York City": 640000, "Los Angeles": 540000, "Chicago": 370000, "Houston": 300000, "Phoenix": 280000, "Philadelphia": 355000, "San Antonio": 220000, "San Diego": 540000, "Dallas": 290000, "San Jose": 540000, "Miami": 440000, "Atlanta": 270000, "Seattle": 490000, "Denver": 340000, "Boston": 560000, "Las Vegas": 380000}
-}
-
-const years = Object.keys(realEstateData)
+import { Home, DollarSign, TrendingUp, Users } from "lucide-react"
+import axios from "axios";
 
 // City positions
 const cityPositions: { [key: string]: [number, number, number] } = {
-  "New York City": [2.5, 1.2, 0],
-  "Los Angeles": [-2.5, 0.2, 0],
-  "Chicago": [0.5, 1, 0],
-  "Houston": [0, -0.8, 0],
-  "Phoenix": [-1.5, 0, 0],
-  "Philadelphia": [2.3, 0.8, 0],
-  "San Antonio": [-0.5, -1, 0],
-  "San Diego": [-2.3, -0.2, 0],
-  "Dallas": [-0.2, -0.5, 0],
-  "San Jose": [-2.4, 0.5, 0],
-  "Miami": [2, -1.5, 0],
-  "Atlanta": [1.5, -0.8, 0],
-  "Seattle": [-2.3, 1.8, 0],
-  "Denver": [-1, 0.5, 0],
-  "Boston": [2.7, 1.5, 0],
-  "Las Vegas": [-2, 0.3, 0],
-}
+  "New York City, NY": [2.5, 1.2, 0],
+  "Los Angeles, CA": [-2.5, 0.2, 0],
+  "Chicago, IL": [0.5, 1, 0],
+  "Houston, TX": [0, -0.8, 0],
+  "Phoenix, AZ": [-1.5, 0, 0],
+  "Philadelphia, PA": [2.3, 0.8, 0],
+  "San Antonio, TX": [-0.5, -1, 0],
+  "San Diego, CA": [-2.3, -0.2, 0],
+  "Dallas, TX": [-0.2, -0.5, 0],
+  "San Jose, CA": [-2.4, 0.5, 0],
+  "Miami, FL": [2, -1.5, 0],
+  "Atlanta, GA": [1.5, -0.8, 0],
+  "Seattle, WA": [-2.3, 1.8, 0],
+  "Denver, CO": [-1, 0.5, 0],
+  "Boston, MA": [2.7, 1.5, 0],
+  "Las Vegas, NV": [-2, 0.3, 0],
+  "Washington D.C., DC": [2.4, 0.9, 0],
+  "Baltimore, MD": [2.5, 0.7, 0],
+  "Portland, OR": [-2.5, 1.6, 0],
+  "Oklahoma City, OK": [0.5, -0.5, 0],
+  "Milwaukee, WI": [0.6, 1.1, 0],
+  "Albuquerque, NM": [-1.7, -0.2, 0],
+  "Tucson, AZ": [-1.6, 0.2, 0],
+  "Fresno, CA": [-2.4, 0.1, 0],
+  "Sacramento, CA": [-2.5, 0.5, 0],
+  "Long Beach, CA": [-2.4, 0.3, 0],
+  "Kansas City, MO": [0.3, 0.1, 0],
+  "Mesa, AZ": [-1.5, 0.1, 0],
+  "Virginia Beach, VA": [2.3, -1.1, 0],
+  "Cleveland, OH": [1, 0.8, 0],
+  "Pittsburgh, PA": [1, 0.5, 0],
+  "New Orleans, LA": [0.5, -1.5, 0],
+  "Louisville, KY": [1, 0, 0],
+  "Tampa, FL": [2, -1.2, 0],
+  "Omaha, NE": [0.8, 0.4, 0],
+  "Cincinnati, OH": [1, 0.3, 0],
+  "Minneapolis, MN": [0, 1.4, 0],
+  "Wichita, KS": [0.7, -0.3, 0],
+  "Newark, NJ": [2.6, 1.3, 0],
+  "St. Louis, MO": [0.5, 0, 0],
+  "Anchorage, AK": [-2.8, 2, 0],
+  "Honolulu, HI": [-3, -2, 0],
+  "Baton Rouge, LA": [0.5, -1.4, 0],
+};
 
 export default function RealEstateMapComponent() {
   const mountRef = useRef<HTMLDivElement>(null)
   const [selectedCity, setSelectedCity] = useState<{ name: string; price: number; position: THREE.Vector3 } | null>(null)
   const [currentYear, setCurrentYear] = useState(2004)
   const spheresRef = useRef<{ [key: string]: THREE.Mesh }>({})
+  const [realEstateData, setRealEstateData] = useState<{ [key: string]: { [key: string]: number } }>({})
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/dump_data")
+      return response.data
+    } catch (error) {
+      console.error("Error fetching data:", error)
+      return {}
+    }
+  }
+
+  useEffect(() => {
+    const initData = async () => {
+      const data = await fetchData()
+      setRealEstateData(data)
+    }
+    initData()
+  }, [])
 
   useEffect(() => {
     if (!mountRef.current) return
@@ -117,9 +150,10 @@ export default function RealEstateMapComponent() {
     const mouse = new THREE.Vector2()
 
     window.addEventListener('mousemove', (event) => {
-      const rect = mountRef.current!.getBoundingClientRect()
-      mouse.x = ((event.clientX - rect.left) / mountRef.current!.clientWidth) * 2 - 1
-      mouse.y = -((event.clientY - rect.top) / mountRef.current!.clientHeight) * 2 + 1
+      if (!mountRef.current) return
+      const rect = mountRef.current.getBoundingClientRect()
+      mouse.x = ((event.clientX - rect.left) / mountRef.current.clientWidth) * 2 - 1
+      mouse.y = -((event.clientY - rect.top) / mountRef.current.clientHeight) * 2 + 1
 
       raycaster.setFromCamera(mouse, camera)
       const intersects = raycaster.intersectObjects(scene.children)
@@ -130,10 +164,10 @@ export default function RealEstateMapComponent() {
         position.project(camera)
         setSelectedCity({
           name: cityData.name,
-          price: realEstateData[currentYear.toString()][cityData.name],
+          price: realEstateData[currentYear.toString()]?.[cityData.name] || 0,
           position: new THREE.Vector3(
-            (position.x * 0.5 + 0.5) * mountRef.current!.clientWidth,
-            (-position.y * 0.5 + 0.5) * mountRef.current!.clientHeight,
+            (position.x * 0.5 + 0.5) * mountRef.current.clientWidth,
+            (-position.y * 0.5 + 0.5) * mountRef.current.clientHeight,
             0
           ),
         })
@@ -159,135 +193,132 @@ export default function RealEstateMapComponent() {
   }, [])
 
   useEffect(() => {
+    if (!realEstateData[currentYear.toString()]) return
+
     const yearData = realEstateData[currentYear.toString()]
     const prices = Object.values(yearData)
     const minPrice = Math.min(...prices)
     const maxPrice = Math.max(...prices)
 
     Object.entries(yearData).forEach(([cityName, price]) => {
-      const sphere = spheresRef.current[cityName];
+      const sphere = spheresRef.current[cityName]
       if (sphere) {
-        const normalizedPrice = (price - minPrice) / (maxPrice - minPrice);
-        const size = 0.03 + normalizedPrice * (0.15 - 0.03);
-        sphere.scale.setScalar(size / 0.03);
+        const normalizedPrice = (price - minPrice) / (maxPrice - minPrice)
+        const size = 0.03 + normalizedPrice * (0.15 - 0.03)
+        sphere.scale.setScalar(size / 0.03)
         if (sphere.material instanceof THREE.MeshStandardMaterial) {
-          const hue = 0.6 * (1 - normalizedPrice);
-          sphere.material.color.setHSL(hue, 1, 0.5);
+          const hue = 0.6 * (1 - normalizedPrice)
+          sphere.material.color.setHSL(hue, 1, 0.5)
         }
       }
-    });
-  });    
+    })
+  }, [currentYear, realEstateData])
 
   return (
-    <div>
-      <div className="w-full h-full bg-gray-900 text-white">
-        <div className="container mx-auto p-4">
-          <div className="flex flex-col lg:flex-row gap-4">
-            <div className="lg:w-2/3">
-              <h2 className="text-xl font-bold mb-4">Property Map</h2>
-              <div ref={mountRef} className="w-full h-[500px] bg-gray-800 rounded-lg relative">
-                {selectedCity && (
-                  <div
-                    className="absolute bg-gray-800 p-2 rounded text-sm"
-                    style={{
-                      left: `${selectedCity.position.x}px`,
-                      top: `${selectedCity.position.y}px`,
-                      transform: 'translate(-50%, -100%)',
-                    }}
-                  >
-                    {selectedCity.name}: ${selectedCity.price.toLocaleString()}
-                  </div>
-                )}
-              </div>
-              <div className="mt-4">
-                <Slider
-                  min={2004}
-                  max={2023}
-                  step={1}
-                  value={[currentYear]}
-                  onValueChange={(value) => setCurrentYear(value[0])}
-                />
-                <p className="text-center mt-2">Year: {currentYear}</p>
-              </div>
+    <div className="w-full h-full bg-gray-900 text-white">
+      <div className="container mx-auto p-4">
+        <div className="flex flex-col lg:flex-row gap-4">
+          <div className="lg:w-2/3">
+            <h2 className="text-xl font-bold mb-4">Property Map</h2>
+            <div ref={mountRef} className="w-full h-[500px] bg-gray-800 rounded-lg relative">
+              {selectedCity && (
+                <div
+                  className="absolute bg-gray-800 p-2 rounded text-sm"
+                  style={{
+                    left: `${selectedCity.position.x}px`,
+                    top: `${selectedCity.position.y}px`,
+                    transform: 'translate(-50%, -100%)',
+                  }}
+                >
+                  {selectedCity.name}: ${selectedCity.price.toLocaleString()}
+                </div>
+              )}
             </div>
-            <div className="lg:w-1/3">
-              {/* Suggestion and Insights sections */}
+            <div className="mt-4">
+              <Slider
+                min={2004}
+                max={2023}
+                step={1}
+                value={[currentYear]}
+                onValueChange={(value) => setCurrentYear(value[0])}
+              />
+              <p className="text-center mt-2">Year: {currentYear}</p>
             </div>
+          </div>
+          <div className="lg:w-1/3">
+            {/* Suggestion and Insights sections */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Our Suggestion</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="overflow-x-auto font-bold">
+                  Buy this property{" "}
+                </div>
+                <div>Why we say that?</div>
+                <div>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Reprehenderit animi accusamus iste excepturi dolor error natus
+                  culpa aspernatur iure quo. Animi facilis cumque officiis
+                  voluptate in sit nostrum dignissimos similique?
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="mt-4">
+              <CardHeader>
+                <CardTitle>Real Estate Insights</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-4">
+                  <li className="flex items-center space-x-2">
+                    <Home className="text-primary" />
+                    <div>
+                      <h3 className="font-semibold text-sm">Median List to Sale</h3>
+                      <p className="text-2xl">1,234</p>
+                    </div>
+                  </li>
+                  <li className="flex items-center space-x-2 text-sm">
+                    <DollarSign className="text-primary" />
+                    <div>
+                      <h3 className="font-semibold">Median Price</h3>
+                      <p className="text-2xl">$450,000</p>
+                    </div>
+                  </li>
+                  <li className="flex items-center space-x-2 text-sm">
+                    <TrendingUp className="text-primary" />
+                    <div>
+                      <h3 className="font-semibold">Market Trend</h3>
+                      <p className="text-2xl">+5.2% this month</p>
+                    </div>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
-      <div className="h-screen bg-background flex flex-col">
-        {/* this is the search bar */}
-        <header className="sticky top-0 z-10 bg-background border-b flex flex-row items-center justify-center">
-          <div className="px-4 py-4">
-            <Input
-              type="search"
-              placeholder="Search properties..."
-              className="max-w-md mx-auto"
-            />
-          </div>
-          <ModeToggle />
-        </header>
-        <div className="flex flex-col gap-[14px]">
-          <Card>
-            <CardHeader>
-              <CardTitle>Our Suggestion</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto font-bold">
-                Buy this property{" "}
-              </div>
-              <div>Why we say that?</div>
-              <div>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Reprehenderit animi accusamus iste excepturi dolor error natus
-                culpa aspernatur iure quo. Animi facilis cumque officiis
-                voluptate in sit nostrum dignissimos similique?
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Real Estate Insights</CardTitle>
-            </CardHeader>
-            <CardContent className="flex flex-row">
-              <ul className="space-y-4 flex flex-row items-start justify-center">
-                <li className="flex items-center space-x-2">
-                  <Home className="text-primary" />
-                  <div>
-                    <h3 className="font-semibold text-sm">Median List to Sale</h3>
-                    <p className="text-2xl">1,234</p>
-                  </div>
-                </li>
-                <li className="flex items-center space-x-2 text-sm">
-                  <DollarSign className="text-primary" />
-                  <div>
-                    <h3 className="font-semibold">Median Price</h3>
-                    <p className="text-2xl">$450,000</p>
-                  </div>
-                </li>
-                <li className="flex items-center space-x-2 text-sm">
-                  <TrendingUp className="text-primary" />
-                  <div>
-                    <h3 className="font-semibold">Market Trend</h3>
-                    <p className="text-2xl">+5.2% this month</p>
-                  </div>
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Trend</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto">
-                <LineChart />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+      <div className="container mx-auto mt-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Trend</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <LineChart />
+            </div>
+          </CardContent>
+        </Card>
       </div>
+      <header className="sticky top-0 z-10 bg-background border-b flex flex-row items-center justify-center mt-4">
+        <div className="px-4 py-4">
+          <Input
+            type="search"
+            placeholder="Search properties..."
+            className="max-w-md mx-auto"
+          />
+        </div>
+        <ModeToggle />
+      </header>
     </div>
-  );  
+  )
 }
