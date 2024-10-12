@@ -1,6 +1,5 @@
 "use client";
 
-import { Link } from "react-router-dom";
 import React, { useRef, useEffect, useState, useMemo } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
@@ -421,7 +420,7 @@ export default function RealEstateMapComponent() {
           placeholder="Search city..."
           className="max-w-md rounded-full h-[50px] w-[550px]"
         />
-        <Button variant="outline" size="icon" as={Link} to="/">
+        <Button variant="outline" size="icon">
           <HomeIcon className="h-[18px]" />
         </Button>
         <ModeToggle />
@@ -429,7 +428,7 @@ export default function RealEstateMapComponent() {
       <div className="container mx-auto p-4">
         <div className="flex flex-col lg:flex-row gap-4">
           <div className="lg:w-2/3">
-            <h2 className="text-xl font-semibold mb-4 tracking-tighter">
+            <h2 className="text-xl font-semibold mb-4 tracking-wide">
               Median Price of Real Estate Over Time
             </h2>
             <div
@@ -457,7 +456,7 @@ export default function RealEstateMapComponent() {
                 value={[currentYear]}
                 onValueChange={(value) => setCurrentYear(value[0])}
               />
-              <p className="text-center mt-2">
+              <p className="text-center mt-2 text-base">
                 Price Development for Year: {currentYear}
               </p>
             </div>

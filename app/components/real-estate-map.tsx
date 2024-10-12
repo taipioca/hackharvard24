@@ -28,7 +28,7 @@ const RealEstateMap: React.FC<RealEstateMapProps> = ({ cityName, cityData, year 
   }
 
   return (
-    <Card className="mt-4">
+    <Card className="mt-4 text-2xl">
       <CardHeader>
         <CardTitle>{cityName ? `${cityName} Insights` : "Real Estate Insights"}</CardTitle>
       </CardHeader>
@@ -38,14 +38,14 @@ const RealEstateMap: React.FC<RealEstateMapProps> = ({ cityName, cityData, year 
             <DollarSign className="text-primary" />
             <div>
               <h3 className="font-semibold">Median Real Estate Price for {year}</h3>
-              <p className="text-2xl">${medianPrice.toLocaleString()}</p>
+              <p className="text-2xl text-turquoise">${medianPrice.toLocaleString()}</p>
             </div>
           </li>
           <li className="flex items-center space-x-2 text-sm">
             <TrendingUp className="text-primary" />
             <div>
               <h3 className="font-semibold">Current Market Trend in 2024</h3>
-              <p className="text-2xl">{marketTrend}</p>
+              <p className="text-2xl text-turquoise">{marketTrend}</p>
             </div>
           </li>
         </ul>
