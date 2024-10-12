@@ -635,7 +635,7 @@ export default function RealEstateMapComponent() {
             </div>
           </div>
           <div className="lg:w-1/3 flex flex-col gap-5">
-            <RealEstateMap cityData={getCityInsights} cityName={clickedCity || "USA"} />
+            <RealEstateMap cityData={getCityInsights} cityName={clickedCity || "USA"} year={currentYear.toString()} />
             <RealStateInsights cityName={clickedCity || "USA"} />
           </div>
         </div>
