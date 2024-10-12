@@ -7,12 +7,15 @@ import {
   CSS2DRenderer,
   CSS2DObject,
 } from "three/examples/jsm/renderers/CSS2DRenderer.js";
-import { Slider } from "@/components/ui/slider";
-import { Input } from "@/components/ui/input";
-import LineChart from "@/components/charts/line-chart";
+import { Slider } from "@/app/components/ui/slider";
+import { Input } from "@/app/components/ui/input";
+import LineChart from "@/app/components/charts/line-chart";
 import axios from "axios";
-import RealEstateMap from "@/components/real-estate-map";
-import RealStateInsights from "@/components/real-state-insights";
+import RealEstateMap from "@/app/components/real-estate-map";
+import RealStateInsights from "@/app/components/real-state-insights";
+import { ModeToggle } from "@/app/components/ui/toggle";
+import { HomeIcon } from "lucide-react";
+import { Button } from "@/app/components/ui/button";
 
 // City positions
 const cityPositions: { [key: string]: [number, number, number] } = {
@@ -157,7 +160,7 @@ const cityPositions: { [key: string]: [number, number, number] } = {
   "Winston, NC": [1.7, -0.8, 0],
   "Worcester, MA": [2.6, 1.4, 0],
   "York, PA": [2.4, 1.0, 0],
-  "Youngstown, OH": [1.3, 0.7, 0]
+  "Youngstown, OH": [1.3, 0.7, 0],
 };
 
 const citiesToLabel = [
@@ -473,14 +476,15 @@ export default function RealEstateMapComponent() {
 
       // Add label only for specified cities
       if (citiesToLabel.includes(cityName)) {
-        const cityDiv = document.createElement('div')
-        cityDiv.className = 'label'
-        cityDiv.textContent = cityName
-        cityDiv.style.color = 'white'
-        cityDiv.style.fontSize = '12px'
-        const cityLabel = new CSS2DObject(cityDiv)
-        cityLabel.position.set(0, 0.1, 0)
-        sphere.add(cityLabel)
+        const cityDiv = document.createElement("div");
+        cityDiv.className = "label";
+        cityDiv.textContent = cityName;
+        cityDiv.style.color =
+          localStorage.getItem("theme") === "dark" ? "white" : "black";
+        cityDiv.style.fontSize = "12px";
+        const cityLabel = new CSS2DObject(cityDiv);
+        cityLabel.position.set(0, 0.1, 0);
+        sphere.add(cityLabel);
       }
 
       // Add hover effect
@@ -578,25 +582,31 @@ export default function RealEstateMapComponent() {
   }, [currentYear, realEstateData]);
 
   return (
-    <div className="w-full h-full bg-gray-900 text-white">
-      <header className="sticky top-0 z-10 p-4 flex flex-row items-center justify-center mt-4">
+    <div className="w-full h-full">
+      <header className="sticky top-0 z-10 p-4 flex flex-row items-center justify-center mt-4 gap-2">
         <Input
           type="search"
           placeholder="Search properties..."
-          className="max-w-md mx-auto rounded-3xl"
+          className="max-w-md rounded-full h-[50px] w-[550px]"
         />
+        <Button variant="outline" size="icon">
+          <HomeIcon className="h-[18px]" />
+        </Button>
+        <ModeToggle />
       </header>
       <div className="container mx-auto p-4">
         <div className="flex flex-col lg:flex-row gap-4">
           <div className="lg:w-2/3">
-            <h2 className="text-xl font-bold mb-4">Property Map</h2>
+            <h2 className="text-xl font-semibold mb-4 tracking-tighter ">
+              Property Across the Nation
+            </h2>
             <div
               ref={mountRef}
-              className="w-full h-[500px] bg-gray-800 rounded-lg relative"
+              className="w-full h-[500px] rounded-lg relative"
             >
               {selectedCity && (
                 <div
-                  className="absolute bg-gray-800 p-2 rounded text-sm"
+                  className="absolute p-2 rounded text-sm text-black dark:text-white"
                   style={{
                     left: `${selectedCity.position.x}px`,
                     top: `${selectedCity.position.y}px`,
@@ -607,7 +617,8 @@ export default function RealEstateMapComponent() {
                 </div>
               )}
             </div>
-            <div className="mt-4">
+            {/* slider */}
+            <div className="mt-4  w-full flex flex-col gap-2 items-center justify-center">
               <Slider
                 min={2008}
                 max={2023}
@@ -615,10 +626,12 @@ export default function RealEstateMapComponent() {
                 value={[currentYear]}
                 onValueChange={(value) => setCurrentYear(value[0])}
               />
-              <p className="text-center mt-2">Year: {currentYear}</p>
+              <p className="text-center mt-2">
+                Price Development for Year: {currentYear}
+              </p>
             </div>
           </div>
-          <div className="lg:w-1/3">
+          <div className="lg:w-1/3 flex flex-col gap-5">
             <RealEstateMap />
             <RealStateInsights />
           </div>
