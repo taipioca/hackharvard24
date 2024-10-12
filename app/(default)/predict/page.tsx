@@ -8,7 +8,7 @@ import { ModeToggle } from "@/components/ui/toggle";
 
 export default function RealEstateDashboard() {
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="h-screen bg-background flex flex-col">
       {/* this is the search bar */}
       <header className="sticky top-0 z-10 bg-background border-b flex flex-row items-center justify-center">
         <div className=" px-4 py-4">
@@ -21,7 +21,7 @@ export default function RealEstateDashboard() {
         <ModeToggle />
       </header>
 
-      <main className="flex-grow container mx-auto px-4 py-8">
+      <main className="h-screen container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <Card className="mb-8">
@@ -41,39 +41,6 @@ export default function RealEstateDashboard() {
                   <div className="absolute top-1/4 left-1/4 w-3 h-3 bg-red-500 rounded-full"></div>
                   <div className="absolute top-1/2 left-1/2 w-3 h-3 bg-red-500 rounded-full"></div>
                   <div className="absolute bottom-1/4 right-1/4 w-3 h-3 bg-red-500 rounded-full"></div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Featured Listings</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {[1, 2, 3, 4].map((item) => (
-                    <Card key={item}>
-                      <CardContent className="p-4">
-                        <div className="aspect-video relative mb-2">
-                          <Image
-                            src={`/placeholder.svg?height=200&width=300&text=Property ${item}`}
-                            alt={`Property ${item}`}
-                            layout="fill"
-                            objectFit="cover"
-                            className="rounded-md"
-                          />
-                        </div>
-                        <h3 className="font-semibold">Beautiful Home {item}</h3>
-                        <p className="text-sm text-muted-foreground">
-                          123 Main St, City
-                        </p>
-                        <div className="flex justify-between items-center mt-2">
-                          <span className="font-bold">$499,000</span>
-                          <Badge>For Sale</Badge>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
                 </div>
               </CardContent>
             </Card>
@@ -102,33 +69,26 @@ export default function RealEstateDashboard() {
                 <CardTitle>Real Estate Insights</CardTitle>
               </CardHeader>
               <CardContent className="flex flex-row">
-                <ul className="space-y-4 flex flex-row">
+                <ul className="space-y-4 flex flex-row items-start justify-center">
                   <li className="flex items-center space-x-2">
                     <Home className="text-primary" />
                     <div>
-                      <h3 className="font-semibold">Total Listings</h3>
+                      <h3 className="font-semibold text-sm">Median List to Sale</h3>
                       <p className="text-2xl">1,234</p>
                     </div>
                   </li>
-                  <li className="flex items-center space-x-2">
+                  <li className="flex items-center space-x-2 text-sm">
                     <DollarSign className="text-primary" />
                     <div>
-                      <h3 className="font-semibold">Average Price</h3>
+                      <h3 className="font-semibold">Median Price</h3>
                       <p className="text-2xl">$450,000</p>
                     </div>
                   </li>
-                  <li className="flex items-center space-x-2">
+                  <li className="flex items-center space-x-2 text-sm">
                     <TrendingUp className="text-primary" />
                     <div>
                       <h3 className="font-semibold">Market Trend</h3>
                       <p className="text-2xl">+5.2% this month</p>
-                    </div>
-                  </li>
-                  <li className="flex items-center space-x-2">
-                    <Users className="text-primary" />
-                    <div>
-                      <h3 className="font-semibold">Active Buyers</h3>
-                      <p className="text-2xl">567</p>
                     </div>
                   </li>
                 </ul>
