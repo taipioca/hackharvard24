@@ -33,25 +33,6 @@ const RealStateInsights: React.FC<RealStateInsightsProps> = ({ cityName }) => {
           quo. Animi facilis cumque officiis voluptate in sit nostrum
           dignissimos similique?
         </div>
-
-        {/* Dropdown for prediction year selection */}
-        <div className="mt-4">
-          <label htmlFor="year-select" className="block mb-2 font-semibold">
-            Predict
-          </label>
-          <select
-            id="year-select"
-            value={selectedYear}
-            onChange={handleYearChange}
-            className="p-2 border border-gray-300 rounded"
-          >
-            {years.map((year) => (
-              <option key={year} value={year}>
-                {year}
-              </option>
-            ))}
-          </select>
-        </div>
       </CardContent>
     </Card>
   );
