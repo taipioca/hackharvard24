@@ -400,31 +400,53 @@ const GlobeDemo = () => {
   ];
 
   return (
-    <div className="flex flex-row items-center justify-center py-20 h-screen md:h-auto dark:bg-black bg-white relative w-full">
-      <div className="max-w-7xl mx-auto w-full relative overflow-hidden h-full md:h-[40rem] px-4">
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 20,
-          }}
-          animate={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            duration: 1,
-          }}
-          className="div"
-        >
-          <h2 className="text-center text-xl md:text-4xl font-bold text-black dark:text-white flex flex-row w-full items-baseline justify-center h-full p-10 gap-3">
-            <SearchBar />
-            <Button className="rounded-full rounded-l-none">Search</Button>
-          </h2>
-        </motion.div>
-        <div className="absolute w-full bottom-0 inset-x-0 h-40 bg-gradient-to-b pointer-events-none select-none from-transparent dark:to-black to-white z-40" />
-        {/* <div className="absolute w-full -bottom-20 h-72 md:h-full z-10">
+    <div className="h-[50rem] w-full bg-black  bg-grid-small-white/[0.2] relative flex items-center justify-center">
+      {/* Radial gradient for the container to give a faded look */}
+      <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
+
+      <div className="flex flex-row items-center justify-center py-20 h-screen md:h-auto  relative w-full bg-transparent">
+        <div className="max-w-7xl mx-auto w-full relative overflow-hidden h-full md:h-[40rem] px-4">
+          {" "}
+          <motion.div
+            initial={{
+              opacity: 0,
+              y: 20,
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
+            transition={{
+              duration: 1,
+            }}
+            className="div"
+          >
+            <div
+              className="w-full text-center text-6xl leading-relaxed font-bold"
+              style={{
+                background:
+                  "linear-gradient(to right, #0EB5E6 40%, #bc64cd 60%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              Realytics
+            </div>
+            <div className="w-full text-center text-md font-semibold text-white">
+              Forecast the Market. Maximize Your Real Estate Potential.
+            </div>
+            <h2 className="text-center text-xl md:text-4xl font-bold text-black dark:text-white flex flex-row w-full items-baseline justify-center h-full p-10 gap-3">
+              <SearchBar />
+              <Button className="rounded-full rounded-l-none bg-white text-black hover:text-white hover:bg-transparent">
+                Search
+              </Button>
+            </h2>
+          </motion.div>
+          <div className="absolute w-full bottom-0 inset-x-0 h-40 bg-gradient-to-b pointer-events-none select-none  z-40" />
+          {/* <div className="absolute w-full -bottom-20 h-72 md:h-full z-10">
           <World data={sampleArcs} globeConfig={globeConfig} />
         </div> */}
+        </div>
       </div>
     </div>
   );

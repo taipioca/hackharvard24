@@ -68,7 +68,7 @@ export default function SearchBar({ isExpanded }: SearchBarProps) {
         value={inputValue}
         onChange={handleInputChange}
         onFocus={() => setFilteredRegions(allRegions)} // Show all regions on focus
-        className={`w-full p-4 h-[42px] text-sm rounded-full rounded-r-none text-black focus:outline-none transition-all duration-300 border font-light`}
+        className={`w-full p-4 h-[42px] rounded-full rounded-r-none text-white focus:outline-none transition-all duration-300 border border-white bg-transparent font-semibold text-xs`}
         placeholder="Search for investment opportunities"
       />
       {inputValue && filteredRegions.length > 0 && (
