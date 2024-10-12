@@ -26,10 +26,12 @@ def insert_data_from_csv(csv_file):
     data = pd.read_csv(csv_file)
 
     for index, row in data.iterrows():
-        cursor.execute('''
-        INSERT INTO my_table (Year, Region, Average_Median_Sale_Price)
-        VALUES (?, ?, ?)
-        ''', (row['Year'], row['Region'], row['Average Median Sale Price']))
+        average_price = row['Average Median Sale Price']
+        if pd.notna(average_price):
+            cursor.execute('''
+            INSERT INTO my_table (Year, Region, Average_Median_Sale_Price)
+            VALUES (?, ?, ?)
+            ''', (row['Year'], row['Region'], average_price))
 
     conn.commit()
     conn.close()
