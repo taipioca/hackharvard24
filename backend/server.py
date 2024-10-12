@@ -8,10 +8,9 @@ import sqlite3
 from langchain_openai.chat_models import ChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
 from langchain.prompts import ChatPromptTemplate
-from langchain_community.document_loaders import TextLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
 from dotenv import load_dotenv
 import os
+import numpy as np  
 load_dotenv()
 
 app = Flask(__name__)
@@ -59,22 +58,44 @@ def ai_summary():
         return make_response("OpenAI API key not found.", 500)
     
     # Initialize the ChatOpenAI model
-    model = ChatOpenAI(openai_api_key=OPENAI_API_KEY, model_name="gpt-4")
+    try:
+        prediction = predict(region, year)
+        # Handle if prediction is a list or array
+        if isinstance(prediction, (list, np.ndarray)):
+            predicted_value = prediction[0]
+        else:
+            predicted_value = prediction
+        # Convert predicted_value to a native Python float
+        if isinstance(predicted_value, np.ndarray):
+            predicted_value = predicted_value.item()
+        else:
+            predicted_value = float(predicted_value)
+    except Exception as e:
+        logger.error('Error getting prediction: %s', str(e))
+        return make_response(f"An error occurred while getting the prediction: {str(e)}", 500)
+    
+    # Initialize the ChatOpenAI model
+    model = ChatOpenAI(openai_api_key=OPENAI_API_KEY, model_name="gpt-4o-mini", temperature=0.7, max_tokens=500)
     parser = StrOutputParser()
     
     # Define the prompt template
     template = """
-    Is it a good time to invest in real estate in {region} based on historical price trends and current market conditions for the year {year}?
-    Provide a detailed analysis and recommendation.
+    Analyze the real estate market in {region} for the year {year}.
+    The predicted average median sale price is ${predicted_value:,.2f}.
+    Consider factors such as historical price trends, current market conditions, and development projects.
+    Assume that cities with significant development and growth are good opportunities for investment.
+    Provide a summary of your analysis based on the predicted sale price.
+    **Provide a concise summary of your analysis in 5 sentences.**
     """
     prompt = ChatPromptTemplate.from_template(template)
     
+    # Create the chain
     chain = prompt | model | parser
     
     # Run the chain with the input variables
     try:
-        result = chain.run({'region': region, 'year': year})
-        return jsonify({'region': region, 'year': year, 'summary': result})
+        result = chain.invoke({'region': region, 'year': year, 'predicted_value': predicted_value})
+        return jsonify({'region': region, 'year': year, 'predicted_value': predicted_value, 'summary': result})
     except Exception as e:
         logger.error('Error generating AI summary: %s', str(e))
         return make_response(f"An error occurred while generating the summary: {str(e)}", 500)

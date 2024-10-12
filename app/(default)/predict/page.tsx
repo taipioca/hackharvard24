@@ -1,5 +1,6 @@
 "use client";
 
+import { Link } from "react-router-dom";
 import React, { useRef, useEffect, useState, useMemo } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
@@ -16,6 +17,7 @@ import RealStateInsights from "@/app/components/real-state-insights";
 import { ModeToggle } from "@/app/components/ui/toggle";
 import { HomeIcon } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
+import { CompareDemo } from "@/app/components/image-slider";
 
 // City positions
 const cityPositions: { [key: string]: [number, number, number] } = {
@@ -176,181 +178,6 @@ const citiesToLabel = [
   "Miami, FL",
 ];
 
-const migrations = [
-  { from: "Akron, OH", to: "Cleveland, OH" },
-  { from: "Albany, NY", to: "New York, NY" },
-  { from: "Albuquerque, NM", to: "Phoenix, AZ" },
-  { from: "Allentown, PA", to: "Philadelphia, PA" },
-  { from: "Asheville, NC", to: "Charlotte, NC" },
-  { from: "Atlanta, GA", to: "Miami, FL" },
-  { from: "Augusta, GA", to: "Atlanta, GA" },
-  { from: "Austin, TX", to: "Dallas, TX" },
-  { from: "Bakersfield, CA", to: "Los Angeles, CA" },
-  { from: "Baltimore, MD", to: "Washington, DC" },
-  { from: "Barnstable Town, MA", to: "Boston, MA" },
-  { from: "Baton Rouge, LA", to: "New Orleans, LA" },
-  { from: "Bend, OR", to: "Portland, OR" },
-  { from: "Birmingham, AL", to: "Atlanta, GA" },
-  { from: "Boise City, ID", to: "Salt Lake City, UT" },
-  { from: "Boston, MA", to: "New York, NY" },
-  { from: "Boulder, CO", to: "Denver, CO" },
-  { from: "Bremerton, WA", to: "Seattle, WA" },
-  { from: "Bridgeport, CT", to: "New York, NY" },
-  { from: "Buffalo, NY", to: "Rochester, NY" },
-  { from: "Canton, OH", to: "Cleveland, OH" },
-  { from: "Cape Coral, FL", to: "Miami, FL" },
-  { from: "Cedar Rapids, IA", to: "Des Moines, IA" },
-  { from: "Charleston, SC", to: "Savannah, GA" },
-  { from: "Charlotte, NC", to: "Atlanta, GA" },
-  { from: "Chattanooga, TN", to: "Nashville, TN" },
-  { from: "Chicago, IL", to: "Los Angeles, CA" },
-  { from: "Cincinnati, OH", to: "Dayton, OH" },
-  { from: "Clarksville, TN", to: "Nashville, TN" },
-  { from: "Cleveland, OH", to: "Columbus, OH" },
-  { from: "Colorado Springs, CO", to: "Denver, CO" },
-  { from: "Columbia, MO", to: "Kansas City, MO" },
-  { from: "Columbia, SC", to: "Charlotte, NC" },
-  { from: "Columbus, OH", to: "Cincinnati, OH" },
-  { from: "Concord, NH", to: "Boston, MA" },
-  { from: "Corpus Christi, TX", to: "Houston, TX" },
-  { from: "Crestview, FL", to: "Pensacola, FL" },
-  { from: "Dallas, TX", to: "Austin, TX" },
-  { from: "Daphne, AL", to: "Mobile, AL" },
-  { from: "Davenport, IA", to: "Des Moines, IA" },
-  { from: "Dayton, OH", to: "Cincinnati, OH" },
-  { from: "Deltona, FL", to: "Orlando, FL" },
-  { from: "Denver, CO", to: "Boulder, CO" },
-  { from: "Des Moines, IA", to: "Omaha, NE" },
-  { from: "Detroit, MI", to: "Grand Rapids, MI" },
-  { from: "Duluth, MN", to: "Minneapolis, MN" },
-  { from: "Durham, NC", to: "Raleigh, NC" },
-  { from: "El Paso, TX", to: "Austin, TX" },
-  { from: "Eugene, OR", to: "Portland, OR" },
-  { from: "Fayetteville, AR", to: "Little Rock, AR" },
-  { from: "Fayetteville, NC", to: "Raleigh, NC" },
-  { from: "Flint, MI", to: "Detroit, MI" },
-  { from: "Fort Collins, CO", to: "Denver, CO" },
-  { from: "Fresno, CA", to: "Los Angeles, CA" },
-  { from: "Grand Rapids, MI", to: "Detroit, MI" },
-  { from: "Greeley, CO", to: "Fort Collins, CO" },
-  { from: "Greensboro, NC", to: "Charlotte, NC" },
-  { from: "Greenville, SC", to: "Charleston, SC" },
-  { from: "Harrisburg, PA", to: "Philadelphia, PA" },
-  { from: "Hartford, CT", to: "New Haven, CT" },
-  { from: "Hickory, NC", to: "Charlotte, NC" },
-  { from: "Hilton Head Island, SC", to: "Savannah, GA" },
-  { from: "Houston, TX", to: "Austin, TX" },
-  { from: "Huntsville, AL", to: "Birmingham, AL" },
-  { from: "Indianapolis, IN", to: "Chicago, IL" },
-  { from: "Jacksonville, FL", to: "Orlando, FL" },
-  { from: "Jacksonville, NC", to: "Camp Lejeune, NC" },
-  { from: "Kansas City, MO", to: "St. Louis, MO" },
-  { from: "Killeen, TX", to: "Austin, TX" },
-  { from: "Knoxville, TN", to: "Nashville, TN" },
-  { from: "Lake Havasu City, AZ", to: "Las Vegas, NV" },
-  { from: "Lakeland, FL", to: "Tampa, FL" },
-  { from: "Lancaster, PA", to: "Philadelphia, PA" },
-  { from: "Lansing, MI", to: "Grand Rapids, MI" },
-  { from: "Las Vegas, NV", to: "Los Angeles, CA" },
-  { from: "Lexington, KY", to: "Louisville, KY" },
-  { from: "Lincoln, NE", to: "Omaha, NE" },
-  { from: "Little Rock, AR", to: "Fayetteville, AR" },
-  { from: "Los Angeles, CA", to: "San Diego, CA" },
-  { from: "Louisville, KY", to: "Lexington, KY" },
-  { from: "Lubbock, TX", to: "Dallas, TX" },
-  { from: "Madison, WI", to: "Milwaukee, WI" },
-  { from: "Memphis, TN", to: "Nashville, TN" },
-  { from: "Miami, FL", to: "Orlando, FL" },
-  { from: "Milwaukee, WI", to: "Chicago, IL" },
-  { from: "Minneapolis, MN", to: "St. Paul, MN" },
-  { from: "Modesto, CA", to: "Fresno, CA" },
-  { from: "Myrtle Beach, SC", to: "Charleston, SC" },
-  { from: "Naples, FL", to: "Miami, FL" },
-  { from: "Nashville, TN", to: "Memphis, TN" },
-  { from: "New Haven, CT", to: "Hartford, CT" },
-  { from: "New Orleans, LA", to: "Baton Rouge, LA" },
-  { from: "New York, NY", to: "Los Angeles, CA" },
-  { from: "North Port, FL", to: "Sarasota, FL" },
-  { from: "Ogden, UT", to: "Salt Lake City, UT" },
-  { from: "Oklahoma City, OK", to: "Tulsa, OK" },
-  { from: "Omaha, NE", to: "Lincoln, NE" },
-  { from: "Orlando, FL", to: "Tampa, FL" },
-  { from: "Oxnard, CA", to: "Los Angeles, CA" },
-  { from: "Palm Bay, FL", to: "Melbourne, FL" },
-  { from: "Panama City, FL", to: "Tallahassee, FL" },
-  { from: "Pensacola, FL", to: "Mobile, AL" },
-  { from: "Peoria, IL", to: "Chicago, IL" },
-  { from: "Philadelphia, PA", to: "New York, NY" },
-  { from: "Phoenix, AZ", to: "Las Vegas, NV" },
-  { from: "Pittsburgh, PA", to: "Cleveland, OH" },
-  { from: "Port St. Lucie, FL", to: "Palm Beach, FL" },
-  { from: "Portland, ME", to: "Boston, MA" },
-  { from: "Portland, OR", to: "Seattle, WA" },
-  { from: "Poughkeepsie, NY", to: "New York, NY" },
-  { from: "Prescott Valley, AZ", to: "Phoenix, AZ" },
-  { from: "Providence, RI", to: "Boston, MA" },
-  { from: "Provo, UT", to: "Salt Lake City, UT" },
-  { from: "Punta Gorda, FL", to: "Cape Coral, FL" },
-  { from: "Raleigh, NC", to: "Durham, NC" },
-  { from: "Reading, PA", to: "Philadelphia, PA" },
-  { from: "Reno, NV", to: "Las Vegas, NV" },
-  { from: "Richmond, VA", to: "Virginia Beach, VA" },
-  { from: "Riverside, CA", to: "Los Angeles, CA" },
-  { from: "Rochester, MN", to: "Minneapolis, MN" },
-  { from: "Rochester, NY", to: "Buffalo, NY" },
-  { from: "Rockford, IL", to: "Chicago, IL" },
-  { from: "Sacramento, CA", to: "San Francisco, CA" },
-  { from: "Salisbury, MD", to: "Baltimore, MD" },
-  { from: "Salt Lake City, UT", to: "Provo, UT" },
-  { from: "San Antonio, TX", to: "Austin, TX" },
-  { from: "San Diego, CA", to: "Los Angeles, CA" },
-  { from: "San Francisco, CA", to: "San Jose, CA" },
-  { from: "San Jose, CA", to: "San Francisco, CA" },
-  { from: "San Luis Obispo, CA", to: "Santa Barbara, CA" },
-  { from: "Santa Maria, CA", to: "Santa Barbara, CA" },
-  { from: "Santa Rosa, CA", to: "San Francisco, CA" },
-  { from: "Savannah, GA", to: "Charleston, SC" },
-  { from: "Scranton, PA", to: "Wilkes-Barre, PA" },
-  { from: "Seattle, WA", to: "Portland, OR" },
-  { from: "Sebastian, FL", to: "Vero Beach, FL" },
-  { from: "Spokane, WA", to: "Seattle, WA" },
-  { from: "Springfield, IL", to: "Chicago, IL" },
-  { from: "Springfield, MA", to: "Boston, MA" },
-  { from: "Springfield, MO", to: "Kansas City, MO" },
-  { from: "St. Louis, MO", to: "Kansas City, MO" },
-  { from: "Stockton, CA", to: "Modesto, CA" },
-  { from: "Tallahassee, FL", to: "Orlando, FL" },
-  { from: "Tampa, FL", to: "Orlando, FL" },
-  { from: "Toledo, OH", to: "Cleveland, OH" },
-  { from: "Trenton, NJ", to: "Philadelphia, PA" },
-  { from: "Tucson, AZ", to: "Phoenix, AZ" },
-  { from: "Tulsa, OK", to: "Oklahoma City, OK" },
-  { from: "United States", to: "Canada" },
-  { from: "Urban Honolulu, HI", to: "Los Angeles, CA" },
-  { from: "Virginia Beach, VA", to: "Norfolk, VA" },
-  { from: "Visalia, CA", to: "Fresno, CA" },
-  { from: "Washington, DC", to: "Baltimore, MD" },
-  { from: "Wilmington, NC", to: "Charlotte, NC" },
-  { from: "Winston, NC", to: "Greensboro, NC" },
-  { from: "Worcester, MA", to: "Boston, MA" },
-  { from: "York, PA", to: "Harrisburg, PA" },
-  { from: "Youngstown, OH", to: "Cleveland, OH" },
-  { from: "New York, NY", to: "Los Angeles, CA" },
-  { from: "Miami, FL", to: "Seattle, WA" },
-  { from: "Chicago, IL", to: "San Francisco, CA" },
-  { from: "Houston, TX", to: "New York, NY" },
-  { from: "Phoenix, AZ", to: "Chicago, IL" },
-  { from: "Dallas, TX", to: "Los Angeles, CA" },
-  { from: "San Diego, CA", to: "New York, NY" },
-  { from: "Atlanta, GA", to: "San Francisco, CA" },
-  { from: "Boston, MA", to: "Los Angeles, CA" },
-  { from: "Philadelphia, PA", to: "Miami, FL" },
-  { from: "Washington, DC", to: "Houston, TX" },
-  { from: "Seattle, WA", to: "Boston, MA" },
-  { from: "Detroit, MI", to: "Los Angeles, CA" },
-  { from: "San Francisco, CA", to: "Miami, FL" }
-];
-
 export default function RealEstateMapComponent() {
   const mountRef = useRef<HTMLDivElement>(null);
   const [selectedCity, setSelectedCity] = useState<{
@@ -448,7 +275,7 @@ export default function RealEstateMapComponent() {
         cityDiv.className = "label";
         cityDiv.textContent = cityName;
         cityDiv.style.color =
-          localStorage.getItem("theme") === "dark" ? "white" : "black";
+          localStorage.getItem("theme") === "dark" ? "white" : "white";
         cityDiv.style.fontSize = "12px";
         const cityLabel = new CSS2DObject(cityDiv);
         cityLabel.position.set(0, 0.1, 0);
@@ -590,10 +417,10 @@ export default function RealEstateMapComponent() {
       <header className="sticky top-0 z-10 p-4 flex flex-row items-center justify-center mt-4 gap-2">
         <Input
           type="search"
-          placeholder="Search properties..."
+          placeholder="Search city..."
           className="max-w-md rounded-full h-[50px] w-[550px]"
         />
-        <Button variant="outline" size="icon">
+        <Button variant="outline" size="icon" as={Link} to="/">
           <HomeIcon className="h-[18px]" />
         </Button>
         <ModeToggle />
@@ -640,8 +467,15 @@ export default function RealEstateMapComponent() {
           </div>
         </div>
       </div>
-      <div className="container mx-auto mt-4">
-        <LineChart cityData={getCityInsights} cityName={clickedCity || "Average"} />
+        <div className="container mx-auto mt-4 mb-20">
+        <div className="flex flex-col lg:flex-row gap-4">
+          <div className="lg:w-2/3">
+            <LineChart cityData={getCityInsights} cityName={clickedCity || "Average"} />
+          </div>
+          <div className="lg:w-1/3">
+            <CompareDemo />
+          </div>
+        </div>
       </div>
     </div>
   );
