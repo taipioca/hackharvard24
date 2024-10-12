@@ -16,6 +16,7 @@ import RealStateInsights from "@/app/components/real-state-insights";
 import { ModeToggle } from "@/app/components/ui/toggle";
 import { HomeIcon } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
+import { CompareDemo } from "@/app/components/image-slider";
 
 // City positions
 const cityPositions: { [key: string]: [number, number, number] } = {
@@ -640,8 +641,15 @@ export default function RealEstateMapComponent() {
           </div>
         </div>
       </div>
-      <div className="container mx-auto mt-4">
-        <LineChart cityData={getCityInsights} cityName={clickedCity || "Average"} />
+        <div className="container mx-auto mt-4 mb-20">
+        <div className="flex flex-col lg:flex-row gap-4">
+          <div className="lg:w-2/3">
+            <LineChart cityData={getCityInsights} cityName={clickedCity || "Average"} />
+          </div>
+          <div className="lg:w-1/3">
+            <CompareDemo />
+          </div>
+        </div>
       </div>
     </div>
   );
