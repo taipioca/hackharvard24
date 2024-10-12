@@ -9,7 +9,7 @@ const World = dynamic(
   {
     ssr: false,
   }
-);
+); //stuff
 
 const GlobeDemo = () => {
   const globeConfig = {
