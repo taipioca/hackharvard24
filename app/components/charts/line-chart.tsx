@@ -21,7 +21,13 @@ ChartJS.register(
   Legend
 );
 
-const LineChart = () => {
+// Define the props interface for LineChart
+interface LineChartProps {
+  cityData: { [key: string]: number } | null; // Accept cityData as a prop
+  cityName: string | null; // Accept cityName as a prop
+}
+
+const LineChart: React.FC<LineChartProps> = ({ cityData, cityName }) => {
   const genericOptions = {
     fill: false,
     interaction: {
@@ -35,12 +41,16 @@ const LineChart = () => {
   const down = (ctx: any, value: any) =>
     ctx.p0.parsed.y > ctx.p1.parsed.y ? value : undefined;
 
+  // Prepare labels and data based on cityData
+  const labels = Object.keys(cityData || {}); // Extract years from cityData
+  const dataValues = Object.values(cityData || {}); // Extract values from cityData
+
   const data = {
-    labels: ["January", "February", "March", "April", "May", "June", "July"], // You can update these labels as needed
+    labels: labels.length > 0 ? labels : ["No Data"], // Fallback if no data
     datasets: [
       {
-        label: "My First Dataset",
-        data: [65, 59, NaN, 48, 56, 57, 40], // Sample data points
+        label: cityName ? `${cityName} Price Trend` : "Price Trend", // Dynamic label based on cityName
+        data: dataValues.length > 0 ? dataValues : [0], // Fallback if no data
         borderColor: "rgb(75, 192, 192)",
         segment: {
           borderColor: (ctx: any) =>
@@ -63,7 +73,7 @@ const LineChart = () => {
       </CardHeader>
       <CardContent>
         <div className="overflow-x-auto">
-          <Line data={data} options={options} />{" "}
+          <Line data={data} options={options} />
         </div>
       </CardContent>
     </Card>

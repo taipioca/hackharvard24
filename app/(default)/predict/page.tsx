@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useMemo } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import {
@@ -364,6 +364,7 @@ export default function RealEstateMapComponent() {
   const [realEstateData, setRealEstateData] = useState<{
     [key: string]: { [key: string]: number };
   }>({});
+  const [clickedCity, setClickedCity] = useState<string | null>(null);
 
   const fetchData = async () => {
     try {
@@ -511,6 +512,25 @@ export default function RealEstateMapComponent() {
       }
     });
 
+    window.addEventListener("click", (event) => {
+      if (!mountRef.current) return;
+      const rect = mountRef.current.getBoundingClientRect();
+      mouse.x =
+        ((event.clientX - rect.left) / mountRef.current.clientWidth) * 2 - 1;
+      mouse.y =
+        -((event.clientY - rect.top) / mountRef.current.clientHeight) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(scene.children);
+
+      if (intersects.length > 0 && intersects[0].object instanceof THREE.Mesh) {
+        const cityData = intersects[0].object.userData;
+        setClickedCity(cityData.name);
+      } else {
+        setClickedCity(null);
+      }
+    });
+
     // Animation loop
     function animate() {
       requestAnimationFrame(animate);
@@ -549,6 +569,23 @@ export default function RealEstateMapComponent() {
     });
   }, [currentYear, realEstateData]);
 
+  const getCityInsights = useMemo(() => {
+    if (!clickedCity || !realEstateData) {
+      // Calculate mean of all cities if no city is clicked
+      const meanData: { [key: string]: number } = {};
+      Object.entries(realEstateData).forEach(([year, cities]) => {
+        const values = Object.values(cities);
+        meanData[year] = values.reduce((sum, value) => sum + value, 0) / values.length;
+      });
+      return meanData;
+    }
+
+    return Object.entries(realEstateData).reduce((acc, [year, cities]) => {
+      acc[year] = cities[clickedCity] || 0;
+      return acc;
+    }, {} as { [key: string]: number });
+  }, [clickedCity, realEstateData]);
+
   return (
     <div className="w-full h-full">
       <header className="sticky top-0 z-10 p-4 flex flex-row items-center justify-center mt-4 gap-2">
@@ -565,8 +602,8 @@ export default function RealEstateMapComponent() {
       <div className="container mx-auto p-4">
         <div className="flex flex-col lg:flex-row gap-4">
           <div className="lg:w-2/3">
-            <h2 className="text-xl font-semibold mb-4 tracking-tighter ">
-              Property Across the Nation
+            <h2 className="text-xl font-semibold mb-4 tracking-tighter">
+              Median Price of Real Estate Over Time
             </h2>
             <div
               ref={mountRef}
@@ -585,8 +622,7 @@ export default function RealEstateMapComponent() {
                 </div>
               )}
             </div>
-            {/* slider */}
-            <div className="mt-4  w-full flex flex-col gap-2 items-center justify-center">
+            <div className="mt-4 w-full flex flex-col gap-2 items-center justify-center">
               <Slider
                 min={2008}
                 max={2023}
@@ -600,13 +636,13 @@ export default function RealEstateMapComponent() {
             </div>
           </div>
           <div className="lg:w-1/3 flex flex-col gap-5">
-            <RealEstateMap />
-            <RealStateInsights />
+            <RealEstateMap cityData={getCityInsights} cityName={clickedCity || "USA"} />
+            <RealStateInsights cityName={clickedCity || "USA"} />
           </div>
         </div>
       </div>
       <div className="container mx-auto mt-4">
-        <LineChart />
+        <LineChart cityData={getCityInsights} cityName={clickedCity || "Average"} />
       </div>
     </div>
   );
