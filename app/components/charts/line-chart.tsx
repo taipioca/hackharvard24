@@ -62,14 +62,26 @@ const LineChart: React.FC<LineChartProps> = ({ cityData, cityName }) => {
     ],
   };
 
+  // Updated options to show only every 5 years on the x-axis
   const options = {
     ...genericOptions,
+    scales: {
+      x: {
+        ticks: {
+          callback: function (value: any, index: number, values: any) {
+            // Show only every 5th label
+            const year = this.getLabelForValue(value);
+            return index % 2 === 1 ? year : "";
+          },
+        },
+      },
+    },
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Trend</CardTitle>
+        <CardTitle>{cityName} Price Trend from 2008 to 2035</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="overflow-x-auto">

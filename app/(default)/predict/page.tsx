@@ -449,7 +449,7 @@ export default function RealEstateMapComponent() {
         cityDiv.className = "label";
         cityDiv.textContent = cityName;
         cityDiv.style.color =
-          localStorage.getItem("theme") === "dark" ? "white" : "black";
+          localStorage.getItem("theme") === "dark" ? "white" : "white";
         cityDiv.style.fontSize = "12px";
         const cityLabel = new CSS2DObject(cityDiv);
         cityLabel.position.set(0, 0.1, 0);
