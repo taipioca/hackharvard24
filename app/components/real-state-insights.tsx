@@ -37,7 +37,7 @@ const RealStateInsights: React.FC<RealStateInsightsProps> = ({ cityName }) => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              region: "Phoenix, AZ",
+              region: cityName,
               year: selectedYear,
             }),
           });

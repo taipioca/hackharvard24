@@ -8,6 +8,10 @@
 .pnp.js
 .yarn/install-state.gz
 
+
+package.json
+package-lock.json
+
 backend/venv
 backend/.env
 # testing

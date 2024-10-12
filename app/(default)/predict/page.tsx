@@ -1,6 +1,7 @@
 "use client";
 
 import { Link } from "react-router-dom";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useRef, useEffect, useState, useMemo } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
@@ -18,6 +19,7 @@ import { ModeToggle } from "@/app/components/ui/toggle";
 import { HomeIcon } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { CompareDemo } from "@/app/components/image-slider";
+import { Router } from "next/router";
 
 // City positions
 const cityPositions: { [key: string]: [number, number, number] } = {
@@ -179,12 +181,18 @@ const citiesToLabel = [
 ];
 
 export default function RealEstateMapComponent() {
+  const searchParams = useSearchParams();
+  const city = searchParams.get("city");
+  console.log(city?.toString());
+  const router = useRouter();
+
   const mountRef = useRef<HTMLDivElement>(null);
   const [selectedCity, setSelectedCity] = useState<{
     name: string;
     price: number;
     position: THREE.Vector3;
   } | null>(null);
+
   const [currentYear, setCurrentYear] = useState(2008);
   const spheresRef = useRef<{ [key: string]: THREE.Mesh }>({});
   const [realEstateData, setRealEstateData] = useState<{
@@ -396,7 +404,7 @@ export default function RealEstateMapComponent() {
   }, [currentYear, realEstateData]);
 
   const getCityInsights = useMemo(() => {
-    if (!clickedCity || !realEstateData) {
+    if (!city || !realEstateData) {
       // Calculate mean of all cities if no city is clicked
       const meanData: { [key: string]: number } = {};
       Object.entries(realEstateData).forEach(([year, cities]) => {
@@ -408,10 +416,10 @@ export default function RealEstateMapComponent() {
     }
 
     return Object.entries(realEstateData).reduce((acc, [year, cities]) => {
-      acc[year] = cities[clickedCity] || 0;
+      acc[year] = cities[city] || 0;
       return acc;
     }, {} as { [key: string]: number });
-  }, [clickedCity, realEstateData]);
+  }, [city, realEstateData]);
 
   return (
     <div className="w-full h-full">
@@ -421,7 +429,13 @@ export default function RealEstateMapComponent() {
           placeholder="Search city..."
           className="max-w-md rounded-full h-[50px] w-[550px]"
         />
-        <Button variant="outline" size="icon" as={Link} to="/">
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => {
+            router.push("/");
+          }}
+        >
           <HomeIcon className="h-[18px]" />
         </Button>
         <ModeToggle />
@@ -465,10 +479,10 @@ export default function RealEstateMapComponent() {
           <div className="lg:w-1/3 flex flex-col gap-5">
             <RealEstateMap
               cityData={getCityInsights}
-              cityName={clickedCity || "USA"}
+              cityName={city || "USA"}
               year={currentYear.toString()}
             />
-            <RealStateInsights cityName={clickedCity || "USA"} />
+            <RealStateInsights cityName={city || "USA"} />
           </div>
         </div>
       </div>
@@ -477,7 +491,7 @@ export default function RealEstateMapComponent() {
           <div className="lg:w-2/3">
             <LineChart
               cityData={getCityInsights}
-              cityName={clickedCity || "Average"}
+              cityName={city || "Average"}
             />
           </div>
           <div className="lg:w-1/3">
