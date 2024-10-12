@@ -25,6 +25,7 @@ const App = () => {
       try {
         const clientId = process.env.NEXT_PUBLIC_SENTINELHUB_CLIENT_ID;
         const clientSecret = process.env.NEXT_PUBLIC_SENTINELHUB_CLIENT_SECRET;
+        const accessToken = process.env.NEXT_PUBLIC_CESIUM_ACCESS_TOKEN;
 
         if (!clientId || !clientSecret) {
           throw new Error(
@@ -38,7 +39,7 @@ const App = () => {
           {
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
-              Authorization: `Basic ${btoa(`${clientId}:${clientSecret}`)}`,
+              "Authorization": `Bearer ${accessToken}`,
             },
           }
         );
