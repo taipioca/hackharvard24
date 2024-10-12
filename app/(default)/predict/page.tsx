@@ -174,8 +174,8 @@ const citiesToLabel = [
   "Philadelphia, PA",
   "Boston, MA",
   "Baltimore, MD",
-  "Miami, FL"
-]
+  "Miami, FL",
+];
 
 const migrations = [
   { from: "Akron, OH", to: "Cleveland, OH" },
@@ -382,7 +382,7 @@ export default function RealEstateMapComponent() {
 
   useEffect(() => {
     initData();
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (!mountRef.current) return;
@@ -469,12 +469,12 @@ export default function RealEstateMapComponent() {
     //     points.push(start.clone());
     //     points.push(end.clone());
 
-    //     const geometry = new THREE.BufferGeometry().setFromPoints(points);
-    //     const lineMaterial = new THREE.LineBasicMaterial({ color: 0xd3d3d3, transparent: true, opacity: 0.2 }); // Red color for migration lines
-    //     const line = new THREE.Line(geometry, lineMaterial);
-    //     scene.add(line);
-    //   }
-    // });
+        const geometry = new THREE.BufferGeometry().setFromPoints(points);
+        const lineMaterial = new THREE.LineBasicMaterial({ color: 0xd3d3d3, transparent: true, opacity: 0.2 }); // Red color for migration lines
+        const line = new THREE.Line(geometry, lineMaterial);
+        scene.add(line);
+      }
+    });
 
     camera.position.z = 3;
 
