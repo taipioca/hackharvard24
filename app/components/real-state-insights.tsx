@@ -31,7 +31,7 @@ const RealStateInsights: React.FC<RealStateInsightsProps> = ({ cityName }) => {
         setError(null);
 
         try {
-          const response = await fetch("http://127.0.0.1:5000/ai_summary", {
+          const response = await fetch("https://z0s5qwb2ce.execute-api.us-east-1.amazonaws.com/prod/ai_summary", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

@@ -60,7 +60,7 @@ export default function SearchBar({ isExpanded }: SearchBarProps) {
     } else {
       // If region is not in the list, send API request to localhost:5000/extract
       try {
-        const response = await fetch("http://localhost:5000/extract", {
+        const response = await fetch("https://z0s5qwb2ce.execute-api.us-east-1.amazonaws.com/prod/extract", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

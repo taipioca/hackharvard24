@@ -219,7 +219,7 @@ export default function RealEstateMapComponent() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/dump_data");
+      const response = await axios.get("https://z0s5qwb2ce.execute-api.us-east-1.amazonaws.com/prod/dump_data");
       return response.data;
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -471,7 +471,7 @@ export default function RealEstateMapComponent() {
     
         try {
           // Make the POST request to your backend
-          const response = await fetch('http://localhost:5000/chat', {
+          const response = await fetch('https://z0s5qwb2ce.execute-api.us-east-1.amazonaws.com/prod/chat', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
