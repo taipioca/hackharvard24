@@ -30,7 +30,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { SearchBar } from "@/app/components/ui/search";
+import {SearchBar} from "@/app/components/ui/search";
 
 // City positions
 const cityPositions: { [key: string]: [number, number, number] } = {
@@ -191,7 +191,7 @@ const citiesToLabel = [
   "Miami, FL",
 ];
 
-export default function RealEstateMapComponent() {
+ export default function RealEstateMapComponent() {
   const searchParams = useSearchParams();
   const city = searchParams.get("city");
   console.log(city?.toString());
@@ -216,9 +216,7 @@ export default function RealEstateMapComponent() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(
-        "https://z0s5qwb2ce.execute-api.us-east-1.amazonaws.com/prod/dump_data"
-      );
+      const response = await axios.get("https://z0s5qwb2ce.execute-api.us-east-1.amazonaws.com/prod/dump_data");
       return response.data;
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -431,16 +429,13 @@ export default function RealEstateMapComponent() {
     setIsLoading(true);
 
     try {
-      const response = await fetch(
-        "https://z0s5qwb2ce.execute-api.us-east-1.amazonaws.com/prod/chat",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ user_input: message }),
-        }
-      );
+      const response = await fetch("https://z0s5qwb2ce.execute-api.us-east-1.amazonaws.com/prod/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ user_input: message }),
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -455,15 +450,6 @@ export default function RealEstateMapComponent() {
       setIsLoading(false);
     }
     setMessage("");
->>>>>>> 88312301ab5ad1830341dacf32c52ed2e2b8b4f7
-  };
-
-  const openModal = () => {
-    setShowModal(true);
-  };
-
-  const closeModal = () => {
-    setShowModal(false);
   };
 
   return (
