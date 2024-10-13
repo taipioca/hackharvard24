@@ -9,7 +9,7 @@ interface RealStateInsightsProps {
 
 const RealStateInsights: React.FC<RealStateInsightsProps> = ({ cityName }) => {
   // State to hold the selected year
-  const [selectedYear, setSelectedYear] = useState<number>(2025);
+  const [selectedYear] = useState<number>(2025);
 
   // State to hold the summary from the backend
   const [summary, setSummary] = useState<string>("");
