@@ -1,4 +1,4 @@
-import React from "react";
+import React,  { HTMLAttributes } from "react";
 import Slider from "react-slick";
 import { Compare } from "@/components/ui/compare";
 import honoluluBefore from "../public/honolulu_before.png";
@@ -17,7 +17,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 // Custom arrow components
-function NextArrow(props) {
+function NextArrow(props: HTMLAttributes<HTMLDivElement>) {
   const { className, style, onClick } = props;
   return (
     <div
@@ -32,7 +32,7 @@ function NextArrow(props) {
   );
 }
 
-function PrevArrow(props) {
+function PrevArrow(props: HTMLAttributes<HTMLDivElement>) {
   const { className, style, onClick } = props;
   return (
     <div

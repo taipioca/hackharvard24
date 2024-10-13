@@ -69,15 +69,15 @@ const LineChart: React.FC<LineChartProps> = ({ cityData, cityName }) => {
     scales: {
       x: {
         ticks: {
-          callback: function (value: any, index: number) {
+          callback: function (value: any, index: number): string {
             // Show only every 5th label
-            const year = this.getLabelForValue(value);
-            return index % 2 === 1 ? year : "";
+            return index % 2 === 1 ? value : "";
           },
         },
       },
     },
   };
+  
 
   return (
     <Card>

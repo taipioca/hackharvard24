@@ -1,5 +1,4 @@
 import Image from "next/image";
-import LeAnnPic from "/public/LeAnn.jpg";
 import JosiePic from "/public/Josie.jpg";
 import PiyusshPic from "/public/sp.jpg";
 import ChaiPic from "/public/Chai.jpg";
@@ -8,7 +7,6 @@ export default function Component() {
   const teamMembers = [
     { name: "Chai", caption: "ASU, 2025", image: ChaiPic },
     { name: "Josie", caption: "MIT, 2027", image: JosiePic },
-    { name: "LeAnn", caption: "MIT, 2027", image: LeAnnPic },
     { name: "Piyussh", caption: "ASU, 2025", image: PiyusshPic },
   ];
 
