@@ -513,7 +513,7 @@ export default function RealEstateMapComponent() {
         </div>
 
         <div className="container mx-auto p-4">
-          <div className="flex flex-col lg:flex-row gap-4">
+          <div className="w-full flex flex-col lg:flex-row gap-4">
             <div className="lg:w-2/3">
               <h2 className="text-xl font-semibold mb-4 tracking-wide">
                 Median Price of Real Estate Over Time
@@ -560,13 +560,13 @@ export default function RealEstateMapComponent() {
         </div>
         <div className="container mx-auto mt-4 mb-20">
           <div className="flex flex-col lg:flex-row gap-4">
-            <div className="lg:w-2/3">
+            <div className="lg:w-3/5">
               <LineChart
                 cityData={getCityInsights}
                 cityName={city || "Average"}
               />
             </div>
-            <div className="lg:w-1/3">
+            <div className="lg:w-2/5 ml-4">
               <CompareDemo />
             </div>
           </div>
