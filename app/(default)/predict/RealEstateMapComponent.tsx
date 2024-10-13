@@ -419,6 +419,7 @@ export default function RealEstateMapComponent() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            'Authorization': `Bearer 322323232322`
           },
           body: JSON.stringify({ user_input: message }),
         }
