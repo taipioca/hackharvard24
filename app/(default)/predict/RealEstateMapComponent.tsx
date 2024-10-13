@@ -420,6 +420,7 @@ export default function RealEstateMapComponent() {
           headers: {
             "Content-Type": "application/json",
           },
+          mode: "no-cors",
           body: JSON.stringify({ user_input: message }),
         }
       );
