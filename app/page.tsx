@@ -2,9 +2,10 @@
 import React, { useState, useEffect } from "react"; // Added useState and useEffect
 import { motion, useAnimation } from "framer-motion"; // Added useAnimation
 import dynamic from "next/dynamic";
-import SearchBar from "@/app/components/ui/search";
+import { SearchBar } from "@/app/components/ui/search";
 import { Button } from "./components/ui/button";
 import { TypeAnimation } from "react-type-animation";
+import { useRouter } from "next/navigation";
 
 const World = dynamic(
   () => import("@/app/components/ui/globe").then((m) => m.World),
@@ -402,7 +403,6 @@ const GlobeDemo = () => {
 
   const [scrollY, setScrollY] = useState(0);
   const globeControls = useAnimation();
-  const textControls = useAnimation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -416,25 +416,18 @@ const GlobeDemo = () => {
   useEffect(() => {
     const moveGlobe = async () => {
       await globeControls.start({
-        x: -scrollY * 0.5,
-        transition: { type: "spring", stiffness: 100 },
-      });
-    };
-
-    const showText = async () => {
-      await textControls.start({
-        opacity: scrollY > 100 ? 1 : 0,
-        x: scrollY > 100 ? 0 : 100,
-        transition: { duration: 0.5 },
+        x: -scrollY * 1.5,
+        transition: { type: "spring", stiffness: 50 },
       });
     };
 
     moveGlobe();
-    showText();
-  }, [scrollY, globeControls, textControls]);
+  }, [scrollY, globeControls]);
+
+  const router = useRouter();
 
   return (
-    <div className="h-screen w-full bg-black bg-grid-small-white/[0.2] relative flex flex-col items-center justify-start overflow-hidden">
+    <div className="min-h-screen w-full bg-black bg-grid-small-white/[0.2] relative flex flex-col items-center justify-start">
       {/* Background Overlay */}
       <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
 
@@ -487,10 +480,51 @@ const GlobeDemo = () => {
       </div>
 
       {/* Globe Section */}
-      <div className="absolute bottom-0 left-0 right-0 h-[80vh] overflow-hidden">
+      <div className="absolute top-0 left-0 right-0 h-[80vh]">
         <div className="w-full h-[120vh] flex justify-center items-end">
-          <World data={sampleArcs} globeConfig={globeConfig} />
+          <motion.div
+            animate={globeControls}
+            initial={{ x: 0, scale: 1 }}
+            className="absolute top-1/2 transform -translate-x-1/2 w-full h-[180vh] flex justify-center items-end"
+          >
+            <World data={sampleArcs} globeConfig={globeConfig} />
+          </motion.div>
         </div>
+      </div>
+
+      {/* Additional Text */}
+      <div
+        style={{ width: "700px", marginLeft: "700px", marginTop: "300px" }}
+        className="flex flex-col items-start justify-start"
+      >
+        {" "}
+        {/* ml-32 adds left margin */}
+        <h1 className="text-white text-left text-3xl">What we do</h1>{" "}
+        {/* text-left aligns text to the left */}
+        <p className="mt-6 text-gray-400 text-left text-lg">
+          Introducing our cutting-edge real estate prediction tool, designed to
+          empower investors with data-driven insights. We have trained three
+          advanced AI models on 16 years of comprehensive real estate data to
+          forecast property growth over the next decade. After rigorous
+          evaluation, we selected the most effective model to provide accurate
+          predictions. <br></br> <br></br>
+          Our tool features an interactive map and dynamic graphs showcasing
+          real estate pricing trends across more than 100 cities in the USA.
+          With this powerful resource, users can easily visualize and analyze
+          historical pricing data, enabling informed investment decisions in the
+          ever-evolving real estate market.
+        </p>{" "}
+        {/* text-left aligns text to the left */}
+        <Button
+          className="mt-10 text-lg"
+          onClick={() => {
+            router.push("/team");
+          }}
+        >
+          Meet our team
+        </Button>
+        <div style={{ height: "120vh" }} />{" "}
+        {/* This adds extra height for scrolling */}
       </div>
     </div>
   );
