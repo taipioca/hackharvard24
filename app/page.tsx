@@ -487,7 +487,7 @@ const GlobeDemo = () => {
             initial={{ x: 0, scale: 1 }}
             className="absolute top-1/2 transform -translate-x-1/2 w-full h-[180vh] flex justify-center items-end"
           >
-            {/* <World data={sampleArcs} globeConfig={globeConfig} /> */}
+            <World data={sampleArcs} globeConfig={globeConfig} />
           </motion.div>
         </div>
       </div>
