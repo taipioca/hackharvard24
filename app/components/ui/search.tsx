@@ -14,6 +14,7 @@ export function SearchBar({ isExpanded }: SearchBarProps) {
   const [inputValue, setInputValue] = useState<string | undefined>(undefined);
   const [allRegions, setAllRegions] = useState<string[]>([]);
   const [filteredRegions, setFilteredRegions] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false); // New state for loading
   const router = useRouter();
 
   useEffect(() => {
@@ -50,11 +51,10 @@ export function SearchBar({ isExpanded }: SearchBarProps) {
   };
 
   const handleSearch = async (value: string) => {
+    setLoading(true); // Start loading when search starts
     if (filteredRegions.includes(value)) {
-      // If region is in the list, simply route to the prediction page
       router.push(`/predict?city=${value}`);
     } else {
-      // If region is not in the list, send API request to localhost:5000/extract
       try {
         const response = await fetch("https://z0s5qwb2ce.execute-api.us-east-1.amazonaws.com/prod/extract", {
           method: "POST",
@@ -67,12 +67,12 @@ export function SearchBar({ isExpanded }: SearchBarProps) {
         const city = data.result.region;
         const year = data.result.year || 0;
 
-        // Redirect to prediction page with the extracted city
         router.push(`/predict?city=${city}&year=${year}`);
       } catch (error) {
         console.error("Error fetching from API:", error);
       }
     }
+    setLoading(false); // Stop loading when search finishes
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -80,6 +80,7 @@ export function SearchBar({ isExpanded }: SearchBarProps) {
       handleSearch(inputValue ?? "");
     }
   };
+
   return (
     <div
       className={`relative w-full max-w-xl mt-1 flex  items-center justify-center gap-2 transition-transform ${
@@ -98,9 +99,34 @@ export function SearchBar({ isExpanded }: SearchBarProps) {
       <Button
         onClick={() => handleSearch(inputValue ?? "")}
         className="rounded-full rounded-l-none bg-white text-black hover:text-white hover:bg-transparent"
+        disabled={loading} // Disable the button when loading
       >
-        Search
+        {loading ? "Loading..." : "Search"}
       </Button>
+      {loading && (
+        <div className="absolute right-[-40px]">
+          <svg
+            className="animate-spin h-5 w-5 text-white"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+            ></path>
+          </svg>
+        </div>
+      )}
       <style jsx>{`
         input:focus {
           box-shadow: 0 0 10px #4d547a, 0 0 20px #4d547a, 0 0 30px #4d547a;

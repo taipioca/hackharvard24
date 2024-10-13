@@ -192,7 +192,7 @@ const citiesToLabel = [
   "Miami, FL",
 ];
 
-export default function RealEstateMapComponent() {
+ export default function RealEstateMapComponent() {
   const searchParams = useSearchParams();
   const city = searchParams.get("city");
   console.log(city?.toString());
@@ -626,4 +626,3 @@ export default function RealEstateMapComponent() {
     </>
   );
 }
-
