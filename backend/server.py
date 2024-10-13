@@ -49,29 +49,37 @@ def extract_region_and_year(input_text, regions_list):
     model = ChatOpenAI(openai_api_key=OPENAI_API_KEY, model_name="gpt-4o-mini", temperature=0.7, max_tokens=100)
     parser = StrOutputParser()
     
-    # Define the prompt template
-    template = f"""
-    Given the input inquiry and the appended list of possible cities/states, output the following JSON in the exact format below:
-    {{
-        "Region": "(Closest matching region from the list, with the city and state with 2-letter abbreviation)",
-        "Year": "(Year in four digits)"
-    }}
+    # Convert regions_list to a string
+    regions_string = '\n'.join(regions_list)
 
-    Do not give any cities and states that are not in the appended list. If you are unsure, make the best guess and fill out all three fields in the exact format described. Do not output any other text or information other than the JSON.
-    
-    Here is the list of possible regions:
-    \n\n""" + '\n'.join(regions_list) + f"\n\nInput text: '{input_text}'"
-    
+    # Define the prompt template with escaped braces
+    template = """
+Given the input inquiry and the appended list of possible cities/states, output the following JSON in the exact format below:
+{{
+    "region": "(Closest matching region from the list, with the city and state with 2-letter abbreviation)",
+    "year": "(Year in four digits)"
+}}
+
+Do not give any cities and states that are not in the appended list. If you are unsure, make the best guess and fill out all fields in the exact format described. Do not output any other text or information other than the JSON.
+
+Here is the list of possible regions:
+{regions}
+
+Input text: '{input_text}'
+"""
+
     # Create the prompt
     prompt = ChatPromptTemplate.from_template(template)
-    
+
     # Create the chain
     chain = prompt | model | parser
-    
-    # Run the chain with the input variable
+
+    # Run the chain with the input variables
     try:
-        result = chain.invoke({'input_text': input_text})  # Pass the input text
-        return result
+        result = chain.invoke({'input_text': input_text, 'regions': regions_string})
+        # Parse the result as JSON
+        parsed_result = json.loads(result)
+        return parsed_result
     except Exception as e:
         logger.error(f"Error extracting region and year: {str(e)}")
         raise ValueError(f"An error occurred while processing: {str(e)}")
