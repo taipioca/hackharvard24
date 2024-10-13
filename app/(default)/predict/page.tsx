@@ -21,6 +21,7 @@ import { Button } from "@/app/components/ui/button";
 import { CompareDemo } from "@/app/components/image-slider";
 import { Router } from "next/router";
 import { RealEstateAiCard } from "@/app/components/real-estate-ai-card";
+import usa from "./usa.png";
 
 // City positions
 const cityPositions: { [key: string]: [number, number, number] } = {
@@ -287,7 +288,7 @@ export default function RealEstateMapComponent() {
           localStorage.getItem("theme") === "dark" ? "white" : "white";
         cityDiv.style.fontSize = "12px";
         const cityLabel = new CSS2DObject(cityDiv);
-        cityLabel.position.set(0, 0.1, 0);
+        cityLabel.position.set(0, 0, 0);
         sphere.add(cityLabel);
       }
 
@@ -312,6 +313,20 @@ export default function RealEstateMapComponent() {
     //   }
     // });
 
+    const textureLoader = new THREE.TextureLoader();
+    textureLoader.load(usa.src, (texture) => {
+      const material = new THREE.MeshBasicMaterial({
+        map: texture,
+        transparent: true,
+        opacity: 0.5,
+        side: THREE.DoubleSide,
+      });
+      const geometry = new THREE.PlaneGeometry(6.8, 4.1); // Adjust size as needed
+      const usaMap = new THREE.Mesh(geometry, material);
+      usaMap.position.set(0.08, 0.2, -0.1); // Adjust position as needed
+      scene.add(usaMap);
+    });
+
     camera.position.z = 3;
 
     // Raycaster for hover effect
@@ -329,7 +344,11 @@ export default function RealEstateMapComponent() {
       raycaster.setFromCamera(mouse, camera);
       const intersects = raycaster.intersectObjects(scene.children);
 
-      if (intersects.length > 0 && intersects[0].object instanceof THREE.Mesh) {
+      if (
+        intersects.length > 0 &&
+        intersects[0].object instanceof THREE.Mesh &&
+        intersects[0].object.userData.name !== undefined
+      ) {
         const cityData = intersects[0].object.userData;
         const position = intersects[0].object.position.clone();
         position.project(camera);
