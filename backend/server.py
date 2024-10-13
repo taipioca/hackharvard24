@@ -25,6 +25,49 @@ models = joblib.load('region_models.pkl')
 
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
+@app.route('/chat', methods=['POST'])
+def chat():
+    data = request.json
+    user_input = data.get('user_input')
+    
+    if not user_input:
+        return jsonify({"error": "User input is required."}), 400
+    
+    # Get OpenAI API key from environment variable
+    OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+    if not OPENAI_API_KEY:
+        logger.error('OpenAI API key not found.')
+        return jsonify({"error": "OpenAI API key not found."}), 500
+    
+    # Initialize the ChatOpenAI model
+    model = ChatOpenAI(
+        openai_api_key=OPENAI_API_KEY,
+        model_name="gpt-4o-mini",
+        temperature=0.7,
+        max_tokens=500
+    )
+    
+    # Define a prompt template that sets the context to real estate investments
+    template = """
+You are a real estate investment expert. Provide detailed, accurate, and insightful information about real estate investments, market trends, and price predictions.
+
+User Question: "{user_input}"
+
+Your Response:
+"""
+    prompt = ChatPromptTemplate.from_template(template)
+    
+    # Create the chain
+    chain = prompt | model | StrOutputParser()
+    
+    # Run the chain with the user input
+    try:
+        response = chain.invoke({'user_input': user_input})
+        return jsonify({"response": response})
+    except Exception as e:
+        logger.error('Error generating response: %s', str(e))
+        return jsonify({"error": str(e)}), 500
+
 
 # Function to load regions from a file
 def load_regions(file_path='../public/region_entries.txt'):
