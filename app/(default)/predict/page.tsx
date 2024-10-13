@@ -2,15 +2,12 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useRef, useEffect, useState, useMemo } from "react";
+import SyncLoader from "react-spinners/SyncLoader";
+import ReactMarkdown from "react-markdown";
+import { Check, Loader2, Circle } from "lucide-react";
+
 import * as THREE from "three";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import {
   CSS2DRenderer,
@@ -22,12 +19,9 @@ import LineChart from "@/app/components/charts/line-chart";
 import axios from "axios";
 import RealEstateMap from "@/app/components/real-estate-map";
 import RealStateInsights from "@/app/components/real-state-insights";
-import { ModeToggle } from "@/app/components/ui/toggle";
 import { HomeIcon, Send, X } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { CompareDemo } from "@/app/components/image-slider";
-import { Router } from "next/router";
-import { RealEstateAiCard } from "@/app/components/real-estate-ai-card";
 import usa from "./usa.png";
 import {
   Card,
@@ -37,6 +31,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import SearchBar from "@/app/components/ui/search";
 
 // City positions
 const cityPositions: { [key: string]: [number, number, number] } = {
@@ -216,13 +211,21 @@ export default function RealEstateMapComponent() {
     [key: string]: { [key: string]: number };
   }>({});
   const [clickedCity, setClickedCity] = useState<string | null>(null);
+  const [message, setMessage] = useState("");
+  const [response, setResponse] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [trendLoading, setTrendLoading] = useState(false);
 
   const fetchData = async () => {
     try {
       const response = await axios.get("http://localhost:5000/dump_data");
+      setTrendLoading(true);
       return response.data;
     } catch (error) {
       console.error("Error fetching data:", error);
+      setTrendLoading(false);
+
       return {};
     }
   };
@@ -239,7 +242,6 @@ export default function RealEstateMapComponent() {
   useEffect(() => {
     if (!mountRef.current) return;
 
-    // Scene setup
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
       75,
@@ -254,7 +256,6 @@ export default function RealEstateMapComponent() {
     );
     mountRef.current.appendChild(renderer.domElement);
 
-    // Label renderer setup
     const labelRenderer = new CSS2DRenderer();
     labelRenderer.setSize(
       mountRef.current.clientWidth,
@@ -263,12 +264,9 @@ export default function RealEstateMapComponent() {
     labelRenderer.domElement.style.position = "absolute";
     labelRenderer.domElement.style.top = "0px";
     mountRef.current.appendChild(labelRenderer.domElement);
-
-    // Controls setup
     const controls = new OrbitControls(camera, labelRenderer.domElement);
     controls.enableDamping = true;
 
-    // Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
     scene.add(ambientLight);
 
@@ -276,7 +274,6 @@ export default function RealEstateMapComponent() {
     pointLight.position.set(5, 5, 5);
     scene.add(pointLight);
 
-    // Create nodes (cities)
     const minSize = 0.05;
     const maxSize = 0.15;
 
@@ -293,8 +290,6 @@ export default function RealEstateMapComponent() {
       scene.add(sphere);
       cityMeshes[cityName] = sphere;
       spheresRef.current[cityName] = sphere;
-
-      // Add label only for specified cities
       if (citiesToLabel.includes(cityName)) {
         const cityDiv = document.createElement("div");
         cityDiv.className = "label";
@@ -307,26 +302,8 @@ export default function RealEstateMapComponent() {
         sphere.add(cityLabel);
       }
 
-      // Add hover effect
       sphere.userData = { name: cityName };
     });
-
-    // // Create migration edges
-    // migrations.forEach(({ from, to }) => {
-    //   const start = cityMeshes[from]?.position;
-    //   const end = cityMeshes[to]?.position;
-
-    //   if (start && end) {
-    //     const points = [];
-    //     points.push(start.clone());
-    //     points.push(end.clone());
-
-    //     const geometry = new THREE.BufferGeometry().setFromPoints(points);
-    //     const lineMaterial = new THREE.LineBasicMaterial({ color: 0xd3d3d3, transparent: true, opacity: 0.2 }); // Red color for migration lines
-    //     const line = new THREE.Line(geometry, lineMaterial);
-    //     scene.add(line);
-    //   }
-    // });
 
     const textureLoader = new THREE.TextureLoader();
     textureLoader.load(usa.src, (texture) => {
@@ -336,15 +313,14 @@ export default function RealEstateMapComponent() {
         opacity: 0.5,
         side: THREE.DoubleSide,
       });
-      const geometry = new THREE.PlaneGeometry(6.8, 4.1); // Adjust size as needed
+      const geometry = new THREE.PlaneGeometry(6.8, 4.1);
       const usaMap = new THREE.Mesh(geometry, material);
-      usaMap.position.set(0.08, 0.2, -0.1); // Adjust position as needed
+      usaMap.position.set(0.08, 0.2, -0.1);
       scene.add(usaMap);
     });
 
     camera.position.z = 3;
 
-    // Raycaster for hover effect
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
 
@@ -400,7 +376,6 @@ export default function RealEstateMapComponent() {
       }
     });
 
-    // Animation loop
     function animate() {
       requestAnimationFrame(animate);
       controls.update();
@@ -409,7 +384,6 @@ export default function RealEstateMapComponent() {
     }
     animate();
 
-    // Cleanup
     return () => {
       mountRef.current?.removeChild(renderer.domElement);
       mountRef.current?.removeChild(labelRenderer.domElement);
@@ -440,7 +414,6 @@ export default function RealEstateMapComponent() {
 
   const getCityInsights = useMemo(() => {
     if (!city || !realEstateData) {
-      // Calculate mean of all cities if no city is clicked
       const meanData: { [key: string]: number } = {};
       Object.entries(realEstateData).forEach(([year, cities]) => {
         const values = Object.values(cities);
@@ -456,81 +429,65 @@ export default function RealEstateMapComponent() {
     }, {} as { [key: string]: number });
   }, [city, realEstateData]);
 
-  const [message, setMessage] = useState(''); // Current input message
-  const [response, setResponse] = useState(""); // Array of chat messages
-  const [showModal, setShowModal] = useState(false); // Modal visibility
-  const [isLoading, setIsLoading] = useState(false); // Loading state
-
   const handleSend = async () => {
-    if (!message.trim()) return; // Prevent sending empty messages
+    if (!message.trim()) return;
 
-    setResponse("")
-        // Add the user's message to the chat history
-       
-        setIsLoading(true); // Set loading state
-    
-        try {
-          // Make the POST request to your backend
-          const response = await fetch('http://localhost:5000/chat', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ user_input: message }),
-          });
-    
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-    
-          const data = await response.json();
-    
-          // Add the chatbot's response to the chat history
-          setResponse(data.response)
-        } catch (error) {
-          console.error('Error sending message:', error);
-          // Optionally, display an error message in the chat
-          setResponse("Error fucck")
-        } finally {
-          setIsLoading(false); // Reset loading state
-        }
-    
-        setMessage(''); // Clear the input field
-        
+    setResponse("");
+    setIsLoading(true);
+
+    try {
+      const response = await fetch("http://localhost:5000/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ user_input: message }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setResponse(data.response);
+    } catch (error) {
+      console.error("Error sending message:", error);
+      setResponse("Error fucck");
+    } finally {
+      setIsLoading(false);
+    }
+    setMessage("");
   };
-  
-  // Handler to open the modal
+
   const openModal = () => {
     setShowModal(true);
   };
 
-  // Handler to close the modal
   const closeModal = () => {
     setShowModal(false);
   };
 
   return (
     <>
-      <div className="w-full h-full">
+      <div className="w-full h-full bg-gray-950">
         <div className="w-screen items-center flex justify-center sticky top-0 z-10">
           {" "}
-          <header className=" p-4 flex flex-row items-center justify-center mt-4 gap-2 bg-white dark:bg-black w-[550px] rounded-full">
+          <header className=" p-2 flex flex-row items-center justify-center mt-4 gap-20 bg-black w-[750px] rounded-full">
             <Button
-              variant="outline"
               size="icon"
               onClick={() => {
                 router.push("/");
               }}
+              className="bg-transparent hover:bg-transparent"
             >
-              <HomeIcon className="h-[18px]" />
+              <HomeIcon className="h-[18px] stroke-white" />
             </Button>
-            <ModeToggle />
-            <Input
+            {/* <Input
               type="search"
               placeholder="Search city..."
-              className="max-w-md rounded-full h-[50px] w-[550px]"
-            />
-
+              className="max-w-md rounded-full border-2 h-[50px] w-[550px]"
+            /> */}
+            <SearchBar />
             <Button
               variant="outline"
               onClick={() => {
@@ -538,9 +495,10 @@ export default function RealEstateMapComponent() {
               }}
               style={{
                 background:
-                  "linear-gradient(to right, #ff0000, #ff7a5c, #ffea00)",
+                  "radial-gradient( circle farthest-corner at 10% 20%,  rgba(2,37,78,1) 0%, rgba(4,56,126,1) 19.7%, rgba(85,245,221,1) 100.2% )",
                 color: "white",
-              }} className="rounded-full"
+              }}
+              className="rounded-full"
             >
               Ask AI
             </Button>
@@ -609,35 +567,54 @@ export default function RealEstateMapComponent() {
       </div>
       {showModal && (
         <Dialog open={showModal} onOpenChange={setShowModal}>
-          <DialogTrigger asChild>
+          <DialogTrigger asChild className="bg-gray-950">
             <Button variant="outline">Open Chatbox</Button>
           </DialogTrigger>
-          <DialogContent className="min-w-[1000px] h-[500px]">
-            <Card className="border-none shadow-none">
+          <DialogContent>
+            <Card className="border-none shadow-none  ">
               <CardHeader>
-                <CardTitle className="text-2xl font-semibold">
-                  AI Assist
+                <CardTitle className="text-3xl font-light text-turquoise">
+                  Real<span className="font-extrabold ">AI</span>
                 </CardTitle>
-                <CardDescription>
-                  Want to learn about mortgages? You only have to ask.
-                </CardDescription>
               </CardHeader>
-              <CardContent className="h-[300px] p-4">
-                <div className="border h-[250px] w[550px] overflow-auto rounded-lg p-4">
-                  {isLoading && "Loading......."}
-                  {response}
+              <CardContent className=" p-4">
+                <div className="overflow-auto h-[150px] rounded-lg p-4 text-xs">
+                  {isLoading && (
+                    <div className="w-full flex flex-col items-center gap-10">
+                      <SyncLoader
+                        color="gray"
+                        size={5}
+                        aria-label="Loading Spinner"
+                        data-testid="loader"
+                      />
+                      <span className="text-xs">Analyzing</span>
+                    </div>
+                  )}
+                  <ReactMarkdown children={response} />
                 </div>
               </CardContent>
+              <CardDescription className="flex flex-row items-center justify-start gap-2 ml-6 mb-2 text-xs">
+                <span className="p-2 border rounded-lg">
+                  Tell me about mortgages.
+                </span>{" "}
+                <span className="p-2 border rounded-lg">
+                  Compare New York property market to Boston
+                </span>
+              </CardDescription>
               <CardFooter>
-                <div className="flex items-center justify-center">
+                <div className="w-full flex items-center justify-center">
                   <Input
                     type="text"
                     placeholder="Ask a question based on real estates..."
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    className="w-[750px]"
+                    className=""
                   />
-                  <Button onClick={handleSend} className="ml-2 w-[150px]">
+                  <Button
+                    onClick={handleSend}
+                    onMouseEnter={handleSend}
+                    className="ml-2 "
+                  >
                     <Send className="w-4 h-4 mr-2" />
                     Ask
                   </Button>
@@ -648,5 +625,65 @@ export default function RealEstateMapComponent() {
         </Dialog>
       )}
     </>
+  );
+}
+
+const loadingSteps = [
+  "Loading maps",
+  "Predicting prices and trends",
+  "AI summarizing",
+];
+
+export function DeploymentStepper() {
+  const [currentStep, setCurrentStep] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentStep((prevStep) => (prevStep + 1) % loadingSteps.length);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-background">
+      <div className="w-full max-w-3xl px-4">
+        <div className="relative">
+          {/* Progress bar */}
+          <div className="absolute top-5 left-0 w-full h-1 bg-gray-200">
+            <div
+              className="absolute top-0 left-0 h-full bg-primary transition-all duration-500 ease-in-out"
+              style={{
+                width: `${(currentStep / (loadingSteps.length - 1)) * 100}%`,
+              }}
+            />
+          </div>
+
+          {/* Steps */}
+          <div className="relative flex justify-between">
+            {loadingSteps.map((step, index) => (
+              <div key={index} className="flex flex-col items-center">
+                <div className="flex items-center justify-center w-10 h-10 bg-background border-2 border-gray-200 rounded-full">
+                  {index < currentStep ? (
+                    <Check className="w-6 h-6 text-primary" />
+                  ) : index === currentStep ? (
+                    <Loader2 className="w-6 h-6 text-primary animate-spin" />
+                  ) : (
+                    <Circle className="w-6 h-6 text-gray-400" />
+                  )}
+                </div>
+                <p
+                  className={`mt-2 text-sm font-medium ${
+                    index <= currentStep ? "text-primary" : "text-gray-400"
+                  }`}
+                >
+                  {step}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

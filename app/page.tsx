@@ -487,11 +487,11 @@ const GlobeDemo = () => {
       </div>
 
       {/* Globe Section */}
-      <div className="absolute bottom-0 left-0 right-0 h-[80vh] overflow-hidden">
+      {/* <div className="absolute bottom-0 left-0 right-0 h-[80vh] overflow-hidden">
         <div className="w-full h-[120vh] flex justify-center items-end">
           <World data={sampleArcs} globeConfig={globeConfig} />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
