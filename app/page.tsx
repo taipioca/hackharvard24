@@ -1,6 +1,6 @@
 "use client";
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useState, useEffect } from "react"; // Added useState and useEffect
+import { motion, useAnimation } from "framer-motion"; // Added useAnimation
 import dynamic from "next/dynamic";
 import SearchBar from "@/app/components/ui/search";
 import { Button } from "./components/ui/button";
@@ -399,6 +399,39 @@ const GlobeDemo = () => {
       color: colors[Math.floor(Math.random() * (colors.length - 1))],
     },
   ];
+
+  const [scrollY, setScrollY] = useState(0);
+  const globeControls = useAnimation();
+  const textControls = useAnimation();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const moveGlobe = async () => {
+      await globeControls.start({
+        x: -scrollY * 0.5,
+        transition: { type: "spring", stiffness: 100 },
+      });
+    };
+
+    const showText = async () => {
+      await textControls.start({
+        opacity: scrollY > 100 ? 1 : 0,
+        x: scrollY > 100 ? 0 : 100,
+        transition: { duration: 0.5 },
+      });
+    };
+
+    moveGlobe();
+    showText();
+  }, [scrollY, globeControls, textControls]);
 
   return (
     <div className="h-screen w-full bg-black bg-grid-small-white/[0.2] relative flex flex-col items-center justify-start overflow-hidden">
