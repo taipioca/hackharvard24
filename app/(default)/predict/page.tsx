@@ -219,8 +219,12 @@ const citiesToLabel = [
 
   const fetchData = async () => {
     try {
+<<<<<<< HEAD
+      const response = await axios.get("https://z0s5qwb2ce.execute-api.us-east-1.amazonaws.com/prod/dump_data");
+=======
       const response = await axios.get("http://localhost:5000/dump_data");
       setTrendLoading(true);
+>>>>>>> 88312301ab5ad1830341dacf32c52ed2e2b8b4f7
       return response.data;
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -432,6 +436,41 @@ const citiesToLabel = [
   const handleSend = async () => {
     if (!message.trim()) return;
 
+<<<<<<< HEAD
+    setResponse("")
+        // Add the user's message to the chat history
+       
+        setIsLoading(true); // Set loading state
+    
+        try {
+          // Make the POST request to your backend
+          const response = await fetch('https://z0s5qwb2ce.execute-api.us-east-1.amazonaws.com/prod/chat', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ user_input: message }),
+          });
+    
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+    
+          const data = await response.json();
+    
+          // Add the chatbot's response to the chat history
+          setResponse(data.response)
+        } catch (error) {
+          console.error('Error sending message:', error);
+          // Optionally, display an error message in the chat
+          setResponse("Error fucck")
+        } finally {
+          setIsLoading(false); // Reset loading state
+        }
+    
+        setMessage(''); // Clear the input field
+        
+=======
     setResponse("");
     setIsLoading(true);
 
@@ -457,6 +496,7 @@ const citiesToLabel = [
       setIsLoading(false);
     }
     setMessage("");
+>>>>>>> 88312301ab5ad1830341dacf32c52ed2e2b8b4f7
   };
 
   const openModal = () => {
