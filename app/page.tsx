@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import SearchBar from "@/app/components/ui/search";
 import { Button } from "./components/ui/button";
+import { TypeAnimation } from "react-type-animation";
 
 const World = dynamic(
   () => import("@/app/components/ui/globe").then((m) => m.World),
@@ -400,50 +401,62 @@ const GlobeDemo = () => {
   ];
 
   return (
-    <div className="h-[50rem] w-full bg-black  bg-grid-small-white/[0.2] relative flex items-center justify-center">
-      {/* Radial gradient for the container to give a faded look */}
+    <div className="h-screen w-full bg-black bg-grid-small-white/[0.2] relative flex flex-col items-center justify-start overflow-hidden">
+      {/* Background Overlay */}
       <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
 
-      <div className="flex flex-row items-center justify-center py-20 h-screen md:h-auto  relative w-full bg-transparent">
-        <div className="max-w-7xl mx-auto w-full relative overflow-hidden h-full md:h-[40rem] px-4">
-          {" "}
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 20,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              duration: 1,
-            }}
-            className="div"
+      {/* Main Content: Title, Headline, and Search */}
+      <div className="flex flex-col items-center justify-center py-10 mt-32 w-full bg-transparent relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="text-center"
+        >
+          {/* Title */}
+          <h1
+            className="text-6xl md:text-7xl font-semibold text-white tracking-wide"
+            style={{ fontFamily: "'Poppins', sans-serif" }}
           >
-            <div
-              className="w-full text-center text-6xl leading-relaxed font-bold bg-transparent transition-all "
-              style={{
-                background:
-                  "linear-gradient(to right, #0EB5E6 40%, #bc64cd 60%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              Realytics
-            </div>
-            <div className="w-full text-center text-md font-semibold text-white">
-              Forecast the Market. Maximize Your Real Estate Potential.
-            </div>
-            <h2 className="text-center text-xl md:text-4xl font-bold aspec text-black dark:text-white flex flex-row w-full items-baseline justify-center h-full p-10 gap-3">
-              <SearchBar />
-              
-            </h2>
-          </motion.div>
-          <div className="absolute w-full bottom-0 inset-x-0 h-40 bg-gradient-to-b pointer-events-none select-none scale  z-40" />
-          {/* <div className="absolute w-full -bottom-20 h-72 md:h-full z-10">
+            Realytics
+          </h1>
+
+          {/* Headline */}
+          <p className="text-xl md:text-2xl font-medium text-white mt-4">
+            Forecast the Market. Maximize Your Real Estate Potential.
+          </p>
+
+          {/* Type Animation */}
+          <div className="text-lg md:text-xl text-gray-300 mt-4 h-8">
+            <TypeAnimation
+              sequence={[
+                "Should I invest in a house in Orlando next year?",
+                2000,
+                "What is the best time to sell my property in Austin?",
+                2000,
+                "Compare real estate markets in New York and San Francisco",
+                2000,
+              ]}
+              wrapper="span"
+              speed={50}
+              repeat={Infinity}
+            />
+          </div>
+
+          {/* Search Bar and Button */}
+          <div className="mt-8 flex justify-center items-center">
+            <SearchBar />
+            {/* <Button className="rounded-full rounded-l-none bg-white text-black hover:text-white hover:bg-transparent">
+              Search
+            </Button> */}
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Globe Section */}
+      <div className="absolute bottom-0 left-0 right-0 h-[80vh] overflow-hidden">
+        <div className="w-full h-[120vh] flex justify-center items-end">
           <World data={sampleArcs} globeConfig={globeConfig} />
-        </div> */}
         </div>
       </div>
     </div>

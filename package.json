@@ -42,13 +42,15 @@
         "react-dom": "^18.3.1",
         "react-router-dom": "^6.27.0",
         "react-slick": "^0.30.2",
+        "react-type-animation": "^3.2.0",
         "shadcn-ui": "^0.2.3",
         "slick-carousel": "^1.8.1",
         "tailwind-merge": "^2.5.3",
         "tailwindcss-animate": "^1.0.7",
         "the": "^1.0.2",
         "three": "^0.169.0",
-        "three-globe": "^2.32.0"
+        "three-globe": "^2.32.0",
+        "typewriter-effect": "^2.21.0"
     },
     "devDependencies": {
         "@types/node": "^20",
