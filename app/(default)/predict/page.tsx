@@ -4,7 +4,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import React, { useRef, useEffect, useState, useMemo } from "react";
 import SyncLoader from "react-spinners/SyncLoader";
 import ReactMarkdown from "react-markdown";
-import { Check, Loader2, Circle } from "lucide-react";
 
 import * as THREE from "three";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
@@ -19,7 +18,7 @@ import LineChart from "@/app/components/charts/line-chart";
 import axios from "axios";
 import RealEstateMap from "@/app/components/real-estate-map";
 import RealStateInsights from "@/app/components/real-state-insights";
-import { HomeIcon, Send, X } from "lucide-react";
+import { HomeIcon, Send } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { CompareDemo } from "@/app/components/image-slider";
 import usa from "./usa.png";
@@ -210,26 +209,17 @@ const citiesToLabel = [
   const [realEstateData, setRealEstateData] = useState<{
     [key: string]: { [key: string]: number };
   }>({});
-  const [clickedCity, setClickedCity] = useState<string | null>(null);
   const [message, setMessage] = useState("");
   const [response, setResponse] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [trendLoading, setTrendLoading] = useState(false);
 
   const fetchData = async () => {
     try {
-<<<<<<< HEAD
       const response = await axios.get("https://z0s5qwb2ce.execute-api.us-east-1.amazonaws.com/prod/dump_data");
-=======
-      const response = await axios.get("http://localhost:5000/dump_data");
-      setTrendLoading(true);
->>>>>>> 88312301ab5ad1830341dacf32c52ed2e2b8b4f7
       return response.data;
     } catch (error) {
       console.error("Error fetching data:", error);
-      setTrendLoading(false);
-
       return {};
     }
   };
@@ -279,7 +269,6 @@ const citiesToLabel = [
     scene.add(pointLight);
 
     const minSize = 0.05;
-    const maxSize = 0.15;
 
     const cityMeshes: { [key: string]: THREE.Mesh } = {};
     Object.entries(cityPositions).forEach(([cityName, position]) => {
@@ -436,46 +425,11 @@ const citiesToLabel = [
   const handleSend = async () => {
     if (!message.trim()) return;
 
-<<<<<<< HEAD
-    setResponse("")
-        // Add the user's message to the chat history
-       
-        setIsLoading(true); // Set loading state
-    
-        try {
-          // Make the POST request to your backend
-          const response = await fetch('https://z0s5qwb2ce.execute-api.us-east-1.amazonaws.com/prod/chat', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ user_input: message }),
-          });
-    
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-    
-          const data = await response.json();
-    
-          // Add the chatbot's response to the chat history
-          setResponse(data.response)
-        } catch (error) {
-          console.error('Error sending message:', error);
-          // Optionally, display an error message in the chat
-          setResponse("Error fucck")
-        } finally {
-          setIsLoading(false); // Reset loading state
-        }
-    
-        setMessage(''); // Clear the input field
-        
-=======
     setResponse("");
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/chat", {
+      const response = await fetch("https://z0s5qwb2ce.execute-api.us-east-1.amazonaws.com/prod/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -496,15 +450,6 @@ const citiesToLabel = [
       setIsLoading(false);
     }
     setMessage("");
->>>>>>> 88312301ab5ad1830341dacf32c52ed2e2b8b4f7
-  };
-
-  const openModal = () => {
-    setShowModal(true);
-  };
-
-  const closeModal = () => {
-    setShowModal(false);
   };
 
   return (
