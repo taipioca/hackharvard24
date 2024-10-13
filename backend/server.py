@@ -10,7 +10,9 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
 import os
-import numpy as np  
+import numpy as np 
+import openai
+
 load_dotenv()
 
 app = Flask(__name__)
@@ -25,6 +27,75 @@ models = joblib.load('region_models.pkl')
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
 
+# Function to load regions from a file
+def load_regions(file_path='../public/region_entries.txt'):
+    try:
+        with open(file_path, 'r') as file:
+            regions = [line.strip() for line in file.readlines()]
+        return regions
+    except Exception as e:
+        logger.error(f"Error loading regions from {file_path}: {str(e)}")
+        return []
+
+# Function to match the closest region and extract year using ChatOpenAI
+def extract_region_and_year(input_text, regions_list):
+    # Get OpenAI API key from environment variable
+    OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+    if not OPENAI_API_KEY:
+        logger.error('OpenAI API key not found.')
+        raise ValueError("OpenAI API key not found.")
+
+    # Initialize the ChatOpenAI model
+    model = ChatOpenAI(openai_api_key=OPENAI_API_KEY, model_name="gpt-4o-mini", temperature=0.7, max_tokens=100)
+    parser = StrOutputParser()
+    
+    # Define the prompt template
+    template = f"""
+    Given the input inquiry and the appended list of possible cities/states, output the following JSON in the exact format below:
+    {{
+        "Region": "(Closest matching region from the list, with the city and state with 2-letter abbreviation)",
+        "Year": "(Year in four digits)"
+    }}
+
+    Do not give any cities and states that are not in the appended list. If you are unsure, make the best guess and fill out all three fields in the exact format described. Do not output any other text or information other than the JSON.
+    
+    Here is the list of possible regions:
+    \n\n""" + '\n'.join(regions_list) + f"\n\nInput text: '{input_text}'"
+    
+    # Create the prompt
+    prompt = ChatPromptTemplate.from_template(template)
+    
+    # Create the chain
+    chain = prompt | model | parser
+    
+    # Run the chain with the input variable
+    try:
+        result = chain.invoke({'input_text': input_text})  # Pass the input text
+        return result
+    except Exception as e:
+        logger.error(f"Error extracting region and year: {str(e)}")
+        raise ValueError(f"An error occurred while processing: {str(e)}")
+
+# Flask endpoint to extract features
+@app.route('/extract', methods=['POST'])
+def extract_features():
+    data = request.json
+    input_text = data.get('user_input')
+    if not input_text:
+        return jsonify({"error": "Input text is required"}), 400
+
+    regions_list = load_regions()
+    if not regions_list:
+        return jsonify({"error": "Failed to load regions list"}), 500
+    
+    # Extract closest region and year
+    try:
+        processed_output = extract_region_and_year(input_text, regions_list)
+        return jsonify({"result": processed_output})
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 500
+
+# Function for making predictions (the definition might vary based on your model)
 def predict(region, year):
     if region in models:
         model = models[region]
@@ -36,7 +107,8 @@ def predict(region, year):
         prediction = model.predict(input_data)
         return prediction
     else:
-        raise ValueError("Region not found.")
+        raise ValueError(f"No model found for region: {region}")
+
 
 @app.route("/")
 def home():

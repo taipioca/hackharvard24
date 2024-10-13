@@ -20,6 +20,7 @@ import { HomeIcon } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { CompareDemo } from "@/app/components/image-slider";
 import { Router } from "next/router";
+import { RealEstateAiCard } from "@/app/components/real-estate-ai-card";
 
 // City positions
 const cityPositions: { [key: string]: [number, number, number] } = {
@@ -440,6 +441,7 @@ export default function RealEstateMapComponent() {
         </Button>
         <ModeToggle />
       </header>
+      <RealEstateAiCard />
       <div className="container mx-auto p-4">
         <div className="flex flex-col lg:flex-row gap-4">
           <div className="lg:w-2/3">
