@@ -30,7 +30,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {SearchBar} from "@/app/components/ui/search";
+import { SearchBar } from "@/app/components/ui/search";
 
 // City positions
 const cityPositions: { [key: string]: [number, number, number] } = {
@@ -191,7 +191,7 @@ const citiesToLabel = [
   "Miami, FL",
 ];
 
- export default function RealEstateMapComponent() {
+export default function RealEstateMapComponent() {
   const searchParams = useSearchParams();
   const city = searchParams.get("city");
   console.log(city?.toString());
@@ -216,7 +216,9 @@ const citiesToLabel = [
 
   const fetchData = async () => {
     try {
-      const response = await axios.get("https://z0s5qwb2ce.execute-api.us-east-1.amazonaws.com/prod/dump_data");
+      const response = await axios.get(
+        "https://z0s5qwb2ce.execute-api.us-east-1.amazonaws.com/prod/dump_data"
+      );
       return response.data;
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -350,25 +352,6 @@ const citiesToLabel = [
       }
     });
 
-    window.addEventListener("click", (event) => {
-      if (!mountRef.current) return;
-      const rect = mountRef.current.getBoundingClientRect();
-      mouse.x =
-        ((event.clientX - rect.left) / mountRef.current.clientWidth) * 2 - 1;
-      mouse.y =
-        -((event.clientY - rect.top) / mountRef.current.clientHeight) * 2 + 1;
-
-      raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObjects(scene.children);
-
-      if (intersects.length > 0 && intersects[0].object instanceof THREE.Mesh) {
-        const cityData = intersects[0].object.userData;
-        setClickedCity(cityData.name);
-      } else {
-        setClickedCity(null);
-      }
-    });
-
     function animate() {
       requestAnimationFrame(animate);
       controls.update();
@@ -429,13 +412,16 @@ const citiesToLabel = [
     setIsLoading(true);
 
     try {
-      const response = await fetch("https://z0s5qwb2ce.execute-api.us-east-1.amazonaws.com/prod/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ user_input: message }),
-      });
+      const response = await fetch(
+        "https://z0s5qwb2ce.execute-api.us-east-1.amazonaws.com/prod/chat",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ user_input: message }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);

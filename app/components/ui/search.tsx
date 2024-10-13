@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
 interface SearchBarProps {
-  onSearch: (query: string) => void;
-  isExpanded: boolean;
+  onSearch?: (query: string) => void;
+  isExpanded?: boolean;
 }
 
 export function SearchBar({ isExpanded }: SearchBarProps) {
@@ -56,13 +56,16 @@ export function SearchBar({ isExpanded }: SearchBarProps) {
       router.push(`/predict?city=${value}`);
     } else {
       try {
-        const response = await fetch("https://z0s5qwb2ce.execute-api.us-east-1.amazonaws.com/prod/extract", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ user_input: value }),
-        });
+        const response = await fetch(
+          "https://z0s5qwb2ce.execute-api.us-east-1.amazonaws.com/prod/extract",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ user_input: value }),
+          }
+        );
         const data = await response.json();
         const city = data.result.region;
         const year = data.result.year || 0;
