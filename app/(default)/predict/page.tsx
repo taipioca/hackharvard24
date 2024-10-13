@@ -456,14 +456,49 @@ export default function RealEstateMapComponent() {
     }, {} as { [key: string]: number });
   }, [city, realEstateData]);
 
-  const [message, setMessage] = useState("");
-  const [showModal, setShowModal] = useState(false);
+  const [message, setMessage] = useState(''); // Current input message
+  const [response, setResponse] = useState(""); // Array of chat messages
+  const [showModal, setShowModal] = useState(false); // Modal visibility
+  const [isLoading, setIsLoading] = useState(false); // Loading state
 
-  const handleSend = () => {
-    console.log("Message sent (no history stored):", message);
-    setMessage("");
+  const handleSend = async () => {
+    if (!message.trim()) return; // Prevent sending empty messages
+
+    setResponse("")
+        // Add the user's message to the chat history
+       
+        setIsLoading(true); // Set loading state
+    
+        try {
+          // Make the POST request to your backend
+          const response = await fetch('http://localhost:5000/chat', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ user_input: message }),
+          });
+    
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+    
+          const data = await response.json();
+    
+          // Add the chatbot's response to the chat history
+          setResponse(data.response)
+        } catch (error) {
+          console.error('Error sending message:', error);
+          // Optionally, display an error message in the chat
+          setResponse("Error fucck")
+        } finally {
+          setIsLoading(false); // Reset loading state
+        }
+    
+        setMessage(''); // Clear the input field
+        
   };
-
+  
   // Handler to open the modal
   const openModal = () => {
     setShowModal(true);
@@ -505,7 +540,7 @@ export default function RealEstateMapComponent() {
                 background:
                   "linear-gradient(to right, #ff0000, #ff7a5c, #ffea00)",
                 color: "white",
-              }}
+              }} className="rounded-full"
             >
               Ask AI
             </Button>
@@ -589,7 +624,8 @@ export default function RealEstateMapComponent() {
               </CardHeader>
               <CardContent className="h-[300px] p-4">
                 <div className="border h-[250px] w[550px] overflow-auto rounded-lg p-4">
-                  {message}
+                  {isLoading && "Loading......."}
+                  {response}
                 </div>
               </CardContent>
               <CardFooter>
