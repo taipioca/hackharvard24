@@ -422,7 +422,7 @@ const GlobeDemo = () => {
             className="div"
           >
             <div
-              className="w-full text-center text-6xl leading-relaxed font-bold text-transparent"
+              className="w-full text-center text-6xl leading-relaxed font-bold bg-transparent transition-all "
               style={{
                 background:
                   "linear-gradient(to right, #0EB5E6 40%, #bc64cd 60%)",
@@ -435,14 +435,12 @@ const GlobeDemo = () => {
             <div className="w-full text-center text-md font-semibold text-white">
               Forecast the Market. Maximize Your Real Estate Potential.
             </div>
-            <h2 className="text-center text-xl md:text-4xl font-bold text-black dark:text-white flex flex-row w-full items-baseline justify-center h-full p-10 gap-3">
+            <h2 className="text-center text-xl md:text-4xl font-bold aspec text-black dark:text-white flex flex-row w-full items-baseline justify-center h-full p-10 gap-3">
               <SearchBar />
-              <Button className="rounded-full rounded-l-none bg-white text-black hover:text-white hover:bg-transparent">
-                Search
-              </Button>
+              
             </h2>
           </motion.div>
-          <div className="absolute w-full bottom-0 inset-x-0 h-40 bg-gradient-to-b pointer-events-none select-none  z-40" />
+          <div className="absolute w-full bottom-0 inset-x-0 h-40 bg-gradient-to-b pointer-events-none select-none scale  z-40" />
           {/* <div className="absolute w-full -bottom-20 h-72 md:h-full z-10">
           <World data={sampleArcs} globeConfig={globeConfig} />
         </div> */}
