@@ -11,7 +11,6 @@ from langchain.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
 import os
 import numpy as np 
-import openai
 
 load_dotenv()
 
