@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Loader } from "lucide-react";
 
 // Define the props interface for RealStateInsights
 interface RealStateInsightsProps {
@@ -32,16 +33,19 @@ const RealStateInsights: React.FC<RealStateInsightsProps> = ({ cityName }) => {
         setError(null);
 
         try {
-          const response = await fetch("https://z0s5qwb2ce.execute-api.us-east-1.amazonaws.com/prod/ai_summary", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              region: cityName,
-              year: selectedYear,
-            }),
-          });
+          const response = await fetch(
+            "https://z0s5qwb2ce.execute-api.us-east-1.amazonaws.com/prod/ai_summary",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                region: cityName,
+                year: selectedYear,
+              }),
+            }
+          );
 
           if (!response.ok) {
             // Handle non-2xx HTTP responses
@@ -75,9 +79,13 @@ const RealStateInsights: React.FC<RealStateInsightsProps> = ({ cityName }) => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-
         {/* Display loading indicator */}
-        {isLoading && <div>Loading summary...</div>}
+        {isLoading && (
+          <div className="w-full flex items-center justify-center flex-col">
+            Generating AI Summary...{" "}
+            <Loader className="animate-spin" size="sm" height={10} width={10} />
+          </div>
+        )}
 
         {/* Display error message */}
         {error && <div className="text-red-500">Error: {error}</div>}
@@ -85,7 +93,6 @@ const RealStateInsights: React.FC<RealStateInsightsProps> = ({ cityName }) => {
         {/* Display summary */}
         {!isLoading && !error && summary && (
           <div>
-            <div className="font-bold mt-4">Summary:</div>
             <div>{summary}</div>
           </div>
         )}

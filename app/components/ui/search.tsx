@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-
+import { LoaderCircle, Search } from "lucide-react";
 interface SearchBarProps {
   onSearch?: (query: string) => void;
   isExpanded?: boolean;
@@ -85,7 +85,7 @@ export function SearchBar({ isExpanded }: SearchBarProps) {
 
   return (
     <div
-      className={`relative w-full max-w-xl mt-1 flex  items-center justify-center gap-2 transition-transform ${
+      className={`relative w-full max-w-xl mt-1 flex  items-center justify-center gap-2  ${
         isExpanded ? "transform -translate-y-8" : ""
       }`}
     >
@@ -94,41 +94,22 @@ export function SearchBar({ isExpanded }: SearchBarProps) {
         value={inputValue}
         onChange={handleInputChange}
         onFocus={() => setFilteredRegions(allRegions)}
-        className={`w-full p-4 h-[42px] rounded-full rounded-r-none text-white focus:outline-none transition-all duration-300 border border-white bg-transparent font-medium text-xs`}
+        className={`w-full p-4 h-[42px] rounded-lg text-white   font-medium text-xs`}
         placeholder="Search for investment opportunities"
         onKeyDown={handleKeyDown}
       />
       <Button
         onClick={() => handleSearch(inputValue ?? "")}
-        className="rounded-full rounded-l-none bg-white text-black hover:text-white hover:bg-transparent"
-        disabled={loading} // Disable the button when loading
+        className="rounded-lg text-white  hover:text-white bg-transparent hover:bg-transparent"
+        disabled={loading}
       >
-        {loading ? "Loading..." : "Search"}
+        {loading ? (
+          <LoaderCircle className="animate-spin" size="sm" />
+        ) : (
+          <Search size="sm" />
+        )}
       </Button>
-      {loading && (
-        <div className="absolute right-[-40px]">
-          <svg
-            className="animate-spin h-5 w-5 text-white"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            ></circle>
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-            ></path>
-          </svg>
-        </div>
-      )}
+
       <style jsx>{`
         input:focus {
           box-shadow: 0 0 10px #4d547a, 0 0 20px #4d547a, 0 0 30px #4d547a;

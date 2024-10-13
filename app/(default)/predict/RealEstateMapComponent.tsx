@@ -444,10 +444,10 @@ export default function RealEstateMapComponent() {
 
   return (
     <>
-      <div className="w-full h-full bg-gray-950">
-        <div className="w-screen items-center flex justify-center sticky top-0 z-10">
+      <div className="w-full h-full bg-gray-950 px-10">
+        <div className="w-screen items-center flex justify-center sticky top-0 z-10 mb-20">
           {" "}
-          <header className=" p-2 flex flex-row items-center justify-center mt-4 gap-20 bg-black w-[750px] rounded-full">
+          <header className=" p-2 flex flex-row items-center justify-center mt-4 gap-2 border-2 bg-black w-[750px] rounded-full">
             <Button
               size="icon"
               onClick={() => {
@@ -473,17 +473,17 @@ export default function RealEstateMapComponent() {
                   "radial-gradient( circle farthest-corner at 10% 20%,  rgba(2,37,78,1) 0%, rgba(4,56,126,1) 19.7%, rgba(85,245,221,1) 100.2% )",
                 color: "white",
               }}
-              className="rounded-full"
+              className="rounded-lg border"
             >
               Ask AI
             </Button>
           </header>
         </div>
 
-        <div className="container mx-auto p-4">
+        <div className="container mx-auto p-4 text-center">
           <div className="w-full flex flex-col lg:flex-row gap-4">
             <div className="lg:w-2/3">
-              <h2 className="text-xl font-semibold mb-4 tracking-wide">
+              <h2 className="text-xl font-semibold mb-4 tracking-tight">
                 Median Price of Real Estate Over Time
               </h2>
               <div
@@ -526,17 +526,15 @@ export default function RealEstateMapComponent() {
             </div>
           </div>
         </div>
-        <div className="container mx-auto mt-4 mb-20">
-          <div className="flex flex-col lg:flex-row gap-4">
-            <div className="lg:w-3/5">
-              <LineChart
-                cityData={getCityInsights}
-                cityName={city || "Average"}
-              />
-            </div>
-            <div className="lg:w-2/5 ml-4">
-              <CompareDemo />
-            </div>
+        <div className="flex flex-row items-start justify-center bg-red-200">
+          <div className="lg:w-3/5">
+            <LineChart
+              cityData={getCityInsights}
+              cityName={city || "Average"}
+            />
+          </div>
+          <div className="lg:w-2/5 ml-4">
+            <CompareDemo />
           </div>
         </div>
       </div>
