@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
@@ -18,9 +19,9 @@ const RealStateInsights: React.FC<RealStateInsightsProps> = ({ cityName }) => {
   const [error, setError] = useState<string | null>(null);
 
   // Handler for year change
-  const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedYear(Number(event.target.value));
-  };
+  // const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  //   setSelectedYear(Number(event.target.value));
+  // };
 
   // Fetch summary from the backend whenever cityName or selectedYear changes
   useEffect(() => {
@@ -64,7 +65,7 @@ const RealStateInsights: React.FC<RealStateInsightsProps> = ({ cityName }) => {
   }, [cityName, selectedYear]);
 
   // Generate years for dropdown (2025 to 2050, every 5 years)
-  const years = Array.from({ length: 6 }, (_, index) => 2025 + index * 5);
+  // const years = Array.from({ length: 6 }, (_, index) => 2025 + index * 5);
 
   return (
     <Card>
