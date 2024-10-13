@@ -11,7 +11,6 @@ from langchain.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
 import os
 import numpy as np 
-import awsgi
 
 
 load_dotenv()
@@ -72,7 +71,7 @@ Your Response:
 
 
 # Function to load regions from a file
-def load_regions(file_path='region_entries.txt'):
+def load_regions(file_path='../public/region_entries.txt'):
     try:
         with open(file_path, 'r') as file:
             regions = [line.strip() for line in file.readlines()]
@@ -311,11 +310,6 @@ def dump_data():
         logger.error('Error retrieving data: %s', str(e))
         return make_response(f"An error occurred while retrieving data: {str(e)}", 500)
 
-def lambda_handler(event, context):
-    # event['httpMethod'] = event['requestContext']['http']['method']
-    # event['path'] = event['requestContext']['http']['path']
-    # event['queryStringParameters'] = event.get('queryStringParameters', {})
-    return awsgi.response(app,event,context)
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=8000)

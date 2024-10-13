@@ -412,8 +412,6 @@ export default function RealEstateMapComponent() {
     setResponse("");
     setIsLoading(true);
 
-    const header = new Headers({ "Access-Control-Allow-Origin": "*" });
-
     try {
       const response = await fetch(
         "https://z0s5qwb2ce.execute-api.us-east-1.amazonaws.com/prod/chat",
@@ -421,7 +419,6 @@ export default function RealEstateMapComponent() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            ...header,
           },
           body: JSON.stringify({ user_input: message }),
         }
