@@ -31,7 +31,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import SearchBar from "@/app/components/ui/search";
+import {SearchBar} from "@/app/components/ui/search";
 
 // City positions
 const cityPositions: { [key: string]: [number, number, number] } = {
@@ -192,7 +192,7 @@ const citiesToLabel = [
   "Miami, FL",
 ];
 
-export default function RealEstateMapComponent() {
+ export default function RealEstateMapComponent() {
   const searchParams = useSearchParams();
   const city = searchParams.get("city");
   console.log(city?.toString());
@@ -625,65 +625,5 @@ export default function RealEstateMapComponent() {
         </Dialog>
       )}
     </>
-  );
-}
-
-const loadingSteps = [
-  "Loading maps",
-  "Predicting prices and trends",
-  "AI summarizing",
-];
-
-export function DeploymentStepper() {
-  const [currentStep, setCurrentStep] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentStep((prevStep) => (prevStep + 1) % loadingSteps.length);
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <div className="flex items-center justify-center min-h-screen bg-background">
-      <div className="w-full max-w-3xl px-4">
-        <div className="relative">
-          {/* Progress bar */}
-          <div className="absolute top-5 left-0 w-full h-1 bg-gray-200">
-            <div
-              className="absolute top-0 left-0 h-full bg-primary transition-all duration-500 ease-in-out"
-              style={{
-                width: `${(currentStep / (loadingSteps.length - 1)) * 100}%`,
-              }}
-            />
-          </div>
-
-          {/* Steps */}
-          <div className="relative flex justify-between">
-            {loadingSteps.map((step, index) => (
-              <div key={index} className="flex flex-col items-center">
-                <div className="flex items-center justify-center w-10 h-10 bg-background border-2 border-gray-200 rounded-full">
-                  {index < currentStep ? (
-                    <Check className="w-6 h-6 text-primary" />
-                  ) : index === currentStep ? (
-                    <Loader2 className="w-6 h-6 text-primary animate-spin" />
-                  ) : (
-                    <Circle className="w-6 h-6 text-gray-400" />
-                  )}
-                </div>
-                <p
-                  className={`mt-2 text-sm font-medium ${
-                    index <= currentStep ? "text-primary" : "text-gray-400"
-                  }`}
-                >
-                  {step}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
   );
 }
