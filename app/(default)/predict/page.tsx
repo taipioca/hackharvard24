@@ -1,9 +1,16 @@
 "use client";
 
-import { Link } from "react-router-dom";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useRef, useEffect, useState, useMemo } from "react";
 import * as THREE from "three";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import {
   CSS2DRenderer,
@@ -16,12 +23,20 @@ import axios from "axios";
 import RealEstateMap from "@/app/components/real-estate-map";
 import RealStateInsights from "@/app/components/real-state-insights";
 import { ModeToggle } from "@/app/components/ui/toggle";
-import { HomeIcon } from "lucide-react";
+import { HomeIcon, Send, X } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { CompareDemo } from "@/app/components/image-slider";
 import { Router } from "next/router";
 import { RealEstateAiCard } from "@/app/components/real-estate-ai-card";
 import usa from "./usa.png";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 // City positions
 const cityPositions: { [key: string]: [number, number, number] } = {
@@ -441,85 +456,161 @@ export default function RealEstateMapComponent() {
     }, {} as { [key: string]: number });
   }, [city, realEstateData]);
 
+  const [message, setMessage] = useState("");
+  const [showModal, setShowModal] = useState(false);
+
+  const handleSend = () => {
+    console.log("Message sent (no history stored):", message);
+    setMessage("");
+  };
+
+  // Handler to open the modal
+  const openModal = () => {
+    setShowModal(true);
+  };
+
+  // Handler to close the modal
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
   return (
-    <div className="w-full h-full">
-      <header className="sticky top-0 z-10 p-4 flex flex-row items-center justify-center mt-4 gap-2">
-        <Input
-          type="search"
-          placeholder="Search city..."
-          className="max-w-md rounded-full h-[50px] w-[550px]"
-        />
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => {
-            router.push("/");
-          }}
-        >
-          <HomeIcon className="h-[18px]" />
-        </Button>
-        <ModeToggle />
-      </header>
-      <RealEstateAiCard />
-      <div className="container mx-auto p-4">
-        <div className="flex flex-col lg:flex-row gap-4">
-          <div className="lg:w-2/3">
-            <h2 className="text-xl font-semibold mb-4 tracking-wide">
-              Median Price of Real Estate Over Time
-            </h2>
-            <div
-              ref={mountRef}
-              className="w-full h-[500px] rounded-lg relative"
+    <>
+      <div className="w-full h-full">
+        <div className="w-screen items-center flex justify-center sticky top-0 z-10">
+          {" "}
+          <header className=" p-4 flex flex-row items-center justify-center mt-4 gap-2 bg-white dark:bg-black w-[550px] rounded-full">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => {
+                router.push("/");
+              }}
             >
-              {selectedCity && (
-                <div
-                  className="absolute p-2 rounded text-sm text-black dark:text-white"
-                  style={{
-                    left: `${selectedCity.position.x}px`,
-                    top: `${selectedCity.position.y}px`,
-                    transform: "translate(-50%, -100%)",
-                  }}
-                >
-                  {selectedCity.name}: ${selectedCity.price.toLocaleString()}
-                </div>
-              )}
+              <HomeIcon className="h-[18px]" />
+            </Button>
+            <ModeToggle />
+            <Input
+              type="search"
+              placeholder="Search city..."
+              className="max-w-md rounded-full h-[50px] w-[550px]"
+            />
+
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowModal(true);
+              }}
+              style={{
+                background:
+                  "linear-gradient(to right, #ff0000, #ff7a5c, #ffea00)",
+                color: "white",
+              }}
+            >
+              Ask AI
+            </Button>
+          </header>
+        </div>
+
+        <div className="container mx-auto p-4">
+          <div className="flex flex-col lg:flex-row gap-4">
+            <div className="lg:w-2/3">
+              <h2 className="text-xl font-semibold mb-4 tracking-wide">
+                Median Price of Real Estate Over Time
+              </h2>
+              <div
+                ref={mountRef}
+                className="w-full h-[500px] rounded-lg relative"
+              >
+                {selectedCity && (
+                  <div
+                    className="absolute p-2 rounded text-sm text-black dark:text-white"
+                    style={{
+                      left: `${selectedCity.position.x}px`,
+                      top: `${selectedCity.position.y}px`,
+                      transform: "translate(-50%, -100%)",
+                    }}
+                  >
+                    {selectedCity.name}: ${selectedCity.price.toLocaleString()}
+                  </div>
+                )}
+              </div>
+              <div className="mt-4 w-full flex flex-col gap-2 items-center justify-center">
+                <Slider
+                  min={2008}
+                  max={2035}
+                  step={1}
+                  value={[currentYear]}
+                  onValueChange={(value) => setCurrentYear(value[0])}
+                />
+                <p className="text-center mt-2 text-base">
+                  Price Development for Year: {currentYear}
+                </p>
+              </div>
             </div>
-            <div className="mt-4 w-full flex flex-col gap-2 items-center justify-center">
-              <Slider
-                min={2008}
-                max={2035}
-                step={1}
-                value={[currentYear]}
-                onValueChange={(value) => setCurrentYear(value[0])}
+            <div className="lg:w-1/3 flex flex-col gap-5">
+              <RealEstateMap
+                cityData={getCityInsights}
+                cityName={city || "USA"}
+                year={currentYear.toString()}
               />
-              <p className="text-center mt-2 text-base">
-                Price Development for Year: {currentYear}
-              </p>
+              <RealStateInsights cityName={city || "USA"} />
             </div>
           </div>
-          <div className="lg:w-1/3 flex flex-col gap-5">
-            <RealEstateMap
-              cityData={getCityInsights}
-              cityName={city || "USA"}
-              year={currentYear.toString()}
-            />
-            <RealStateInsights cityName={city || "USA"} />
+        </div>
+        <div className="container mx-auto mt-4 mb-20">
+          <div className="flex flex-col lg:flex-row gap-4">
+            <div className="lg:w-2/3">
+              <LineChart
+                cityData={getCityInsights}
+                cityName={city || "Average"}
+              />
+            </div>
+            <div className="lg:w-1/3">
+              <CompareDemo />
+            </div>
           </div>
         </div>
       </div>
-      <div className="container mx-auto mt-4 mb-20">
-        <div className="flex flex-col lg:flex-row gap-4">
-          <div className="lg:w-2/3">
-            <LineChart
-              cityData={getCityInsights}
-              cityName={city || "Average"}
-            />
-          </div>
-          <div className="lg:w-1/3">
-            <CompareDemo />
-          </div>
-        </div>
-      </div>
-    </div>
+      {showModal && (
+        <Dialog open={showModal} onOpenChange={setShowModal}>
+          <DialogTrigger asChild>
+            <Button variant="outline">Open Chatbox</Button>
+          </DialogTrigger>
+          <DialogContent className="min-w-[1000px] h-[500px]">
+            <Card className="border-none shadow-none">
+              <CardHeader>
+                <CardTitle className="text-2xl font-semibold">
+                  AI Assist
+                </CardTitle>
+                <CardDescription>
+                  Want to learn about mortgages? You only have to ask.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="h-[300px] p-4">
+                <div className="border h-[250px] w[550px] overflow-auto rounded-lg p-4">
+                  {message}
+                </div>
+              </CardContent>
+              <CardFooter>
+                <div className="flex items-center justify-center">
+                  <Input
+                    type="text"
+                    placeholder="Ask a question based on real estates..."
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    className="w-[750px]"
+                  />
+                  <Button onClick={handleSend} className="ml-2 w-[150px]">
+                    <Send className="w-4 h-4 mr-2" />
+                    Ask
+                  </Button>
+                </div>
+              </CardFooter>
+            </Card>
+          </DialogContent>
+        </Dialog>
+      )}
+    </>
   );
 }
