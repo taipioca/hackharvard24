@@ -31,7 +31,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import SearchBar from "@/app/components/ui/search";
+import {SearchBar} from "@/app/components/ui/search";
 
 // City positions
 const cityPositions: { [key: string]: [number, number, number] } = {
@@ -219,12 +219,7 @@ export default function RealEstateMapComponent() {
 
   const fetchData = async () => {
     try {
-<<<<<<< HEAD
       const response = await axios.get("https://z0s5qwb2ce.execute-api.us-east-1.amazonaws.com/prod/dump_data");
-=======
-      const response = await axios.get("http://localhost:5000/dump_data");
-      setTrendLoading(true);
->>>>>>> 88312301ab5ad1830341dacf32c52ed2e2b8b4f7
       return response.data;
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -436,41 +431,6 @@ export default function RealEstateMapComponent() {
   const handleSend = async () => {
     if (!message.trim()) return;
 
-<<<<<<< HEAD
-    setResponse("")
-        // Add the user's message to the chat history
-       
-        setIsLoading(true); // Set loading state
-    
-        try {
-          // Make the POST request to your backend
-          const response = await fetch('https://z0s5qwb2ce.execute-api.us-east-1.amazonaws.com/prod/chat', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ user_input: message }),
-          });
-    
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-    
-          const data = await response.json();
-    
-          // Add the chatbot's response to the chat history
-          setResponse(data.response)
-        } catch (error) {
-          console.error('Error sending message:', error);
-          // Optionally, display an error message in the chat
-          setResponse("Error fucck")
-        } finally {
-          setIsLoading(false); // Reset loading state
-        }
-    
-        setMessage(''); // Clear the input field
-        
-=======
     setResponse("");
     setIsLoading(true);
 
@@ -496,7 +456,6 @@ export default function RealEstateMapComponent() {
       setIsLoading(false);
     }
     setMessage("");
->>>>>>> 88312301ab5ad1830341dacf32c52ed2e2b8b4f7
   };
 
   const openModal = () => {
@@ -668,62 +627,3 @@ export default function RealEstateMapComponent() {
   );
 }
 
-const loadingSteps = [
-  "Loading maps",
-  "Predicting prices and trends",
-  "AI summarizing",
-];
-
-export function DeploymentStepper() {
-  const [currentStep, setCurrentStep] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentStep((prevStep) => (prevStep + 1) % loadingSteps.length);
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <div className="flex items-center justify-center min-h-screen bg-background">
-      <div className="w-full max-w-3xl px-4">
-        <div className="relative">
-          {/* Progress bar */}
-          <div className="absolute top-5 left-0 w-full h-1 bg-gray-200">
-            <div
-              className="absolute top-0 left-0 h-full bg-primary transition-all duration-500 ease-in-out"
-              style={{
-                width: `${(currentStep / (loadingSteps.length - 1)) * 100}%`,
-              }}
-            />
-          </div>
-
-          {/* Steps */}
-          <div className="relative flex justify-between">
-            {loadingSteps.map((step, index) => (
-              <div key={index} className="flex flex-col items-center">
-                <div className="flex items-center justify-center w-10 h-10 bg-background border-2 border-gray-200 rounded-full">
-                  {index < currentStep ? (
-                    <Check className="w-6 h-6 text-primary" />
-                  ) : index === currentStep ? (
-                    <Loader2 className="w-6 h-6 text-primary animate-spin" />
-                  ) : (
-                    <Circle className="w-6 h-6 text-gray-400" />
-                  )}
-                </div>
-                <p
-                  className={`mt-2 text-sm font-medium ${
-                    index <= currentStep ? "text-primary" : "text-gray-400"
-                  }`}
-                >
-                  {step}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
