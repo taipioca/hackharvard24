@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react"; // Added useState and useEffect
 import { motion, useAnimation } from "framer-motion"; // Added useAnimation
 import dynamic from "next/dynamic";
-import SearchBar from "@/app/components/ui/search";
+import { SearchBar } from "@/app/components/ui/search";
 import { Button } from "./components/ui/button";
 import { TypeAnimation } from "react-type-animation";
 import { useRouter } from "next/navigation";
@@ -471,7 +471,7 @@ const GlobeDemo = () => {
 
           {/* Search Bar and Button */}
           <div className="mt-8 flex justify-center items-center">
-            <SearchBar/>
+            <SearchBar />
             {/* <Button className="rounded-full rounded-l-none bg-white text-black hover:text-white hover:bg-transparent">
               Search
             </Button> */}
@@ -482,27 +482,39 @@ const GlobeDemo = () => {
       {/* Globe Section */}
       <div className="absolute top-0 left-0 right-0 h-[80vh]">
         <div className="w-full h-[120vh] flex justify-center items-end">
-        <motion.div
-          animate={globeControls}
-          initial={{ x: 0, scale: 1 }}
-          className="absolute top-1/2 transform -translate-x-1/2 w-full h-[180vh] flex justify-center items-end"
-        >
-          <World data={sampleArcs} globeConfig={globeConfig} />
-        </motion.div>
+          <motion.div
+            animate={globeControls}
+            initial={{ x: 0, scale: 1 }}
+            className="absolute top-1/2 transform -translate-x-1/2 w-full h-[180vh] flex justify-center items-end"
+          >
+            <World data={sampleArcs} globeConfig={globeConfig} />
+          </motion.div>
         </div>
       </div>
 
       {/* Additional Text */}
-      <div style={{ width: '700px', marginLeft: '700px', marginTop: '300px' }} className="flex flex-col items-start justify-start"> {/* ml-32 adds left margin */}
-        <h1 className="text-white text-left text-3xl">What we do</h1> {/* text-left aligns text to the left */}
-        <p className="mt-6 text-gray-400 text-left text-lg">Introducing our cutting-edge real estate prediction tool, designed to empower 
-          investors with data-driven insights. We have trained three advanced AI models on 16 years of 
-          comprehensive real estate data to forecast property growth over the next decade. After rigorous 
-          evaluation, we selected the most effective model to provide accurate predictions. <br></br> <br></br>
-          Our tool features an interactive map and dynamic graphs showcasing real estate pricing 
-          trends across more than 100 cities in the USA. With this powerful resource, users can easily 
-          visualize and analyze historical pricing data, enabling informed investment decisions in the 
-          ever-evolving real estate market.</p> {/* text-left aligns text to the left */}
+      <div
+        style={{ width: "700px", marginLeft: "700px", marginTop: "300px" }}
+        className="flex flex-col items-start justify-start"
+      >
+        {" "}
+        {/* ml-32 adds left margin */}
+        <h1 className="text-white text-left text-3xl">What we do</h1>{" "}
+        {/* text-left aligns text to the left */}
+        <p className="mt-6 text-gray-400 text-left text-lg">
+          Introducing our cutting-edge real estate prediction tool, designed to
+          empower investors with data-driven insights. We have trained three
+          advanced AI models on 16 years of comprehensive real estate data to
+          forecast property growth over the next decade. After rigorous
+          evaluation, we selected the most effective model to provide accurate
+          predictions. <br></br> <br></br>
+          Our tool features an interactive map and dynamic graphs showcasing
+          real estate pricing trends across more than 100 cities in the USA.
+          With this powerful resource, users can easily visualize and analyze
+          historical pricing data, enabling informed investment decisions in the
+          ever-evolving real estate market.
+        </p>{" "}
+        {/* text-left aligns text to the left */}
         <Button
           className="mt-10 text-lg"
           onClick={() => {
@@ -511,7 +523,8 @@ const GlobeDemo = () => {
         >
           Meet our team
         </Button>
-        <div style={{ height: '120vh' }} /> {/* This adds extra height for scrolling */}
+        <div style={{ height: "120vh" }} />{" "}
+        {/* This adds extra height for scrolling */}
       </div>
     </div>
   );

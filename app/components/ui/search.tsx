@@ -10,15 +10,12 @@ interface SearchBarProps {
   isExpanded: boolean;
 }
 
-export default function SearchBar({ isExpanded }: SearchBarProps) {
+export function SearchBar({ isExpanded }: SearchBarProps) {
   const [inputValue, setInputValue] = useState<string | undefined>(undefined);
   const [allRegions, setAllRegions] = useState<string[]>([]);
   const [filteredRegions, setFilteredRegions] = useState<string[]>([]);
-  const { theme } = useTheme(); // Custom hook to detect dark/light mode
-
   const router = useRouter();
 
-  // Fetch region entries from text file
   useEffect(() => {
     const loadRegionEntries = async () => {
       try {
@@ -37,7 +34,6 @@ export default function SearchBar({ isExpanded }: SearchBarProps) {
     loadRegionEntries();
   }, []);
 
-  // Filter regions based on input value
   useEffect(() => {
     if (inputValue) {
       const filtered = allRegions.filter((region) =>
@@ -79,6 +75,11 @@ export default function SearchBar({ isExpanded }: SearchBarProps) {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSearch(inputValue ?? "");
+    }
+  };
   return (
     <div
       className={`relative w-full max-w-xl mt-1 flex  items-center justify-center gap-2 transition-transform ${
@@ -89,36 +90,17 @@ export default function SearchBar({ isExpanded }: SearchBarProps) {
         type="text"
         value={inputValue}
         onChange={handleInputChange}
-        onFocus={() => setFilteredRegions(allRegions)} // Show all regions on focus
+        onFocus={() => setFilteredRegions(allRegions)}
         className={`w-full p-4 h-[42px] rounded-full rounded-r-none text-white focus:outline-none transition-all duration-300 border border-white bg-transparent font-medium text-xs`}
         placeholder="Search for investment opportunities"
+        onKeyDown={handleKeyDown}
       />
-      {inputValue && filteredRegions.length > 0 && (
-        <ul
-          className={`absolute z-10 text-left text-sm bg-white border border-gray-300 rounded-lg mt-1 w-full ${
-            theme === "dark" ? "bg-gray-800" : "bg-white"
-          }`}
-        >
-          {filteredRegions.map((region) => (
-            <li
-              key={region}
-              className={`p-2 font-medium cursor-pointer hover:bg-gray-200 ${
-                theme === "dark" ? "text-white" : "text-black"
-              }`}
-              onClick={() => handleSearch(region)}
-            >
-              {region}
-            </li>
-          ))}
-        </ul>
-      )}
       <Button
         onClick={() => handleSearch(inputValue ?? "")}
         className="rounded-full rounded-l-none bg-white text-black hover:text-white hover:bg-transparent"
       >
         Search
       </Button>
-
       <style jsx>{`
         input:focus {
           box-shadow: 0 0 10px #4d547a, 0 0 20px #4d547a, 0 0 30px #4d547a;
