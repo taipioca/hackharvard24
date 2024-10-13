@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Inter_Tight } from "next/font/google";
 import { ThemeProvider } from "@/app/components/theme-provider";
+import { Analytics } from '@vercel/analytics/react';
 
 const inter = Inter_Tight({
   variable: "--font-geist-mono",
@@ -31,6 +32,7 @@ export default function RootLayout({
         >
           {children}
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
